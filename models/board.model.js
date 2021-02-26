@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
   board.associate = function(models) {
     board.belongsToMany(models.users, {
       through: 'users_boards',
-      foreignKey: 'boardId'
+      foreignKey: 'board_id'
     });
   };
   // 보드에 입력된 리스트들
