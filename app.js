@@ -10,7 +10,12 @@ const boardRouter = require('./routes/board');
 const registerRouter = require('./routes/register');
 
 const app = express();
-sequelize.sequelize.sync();
+sequelize.sequelize.sync().then(() => {
+      console.log('db 초기화 완료');
+    }).catch((err) => {
+        console.error('db 초기화 실패');
+        console.error(err);
+    });
 
 app.use(logger('dev'));
 app.use(express.json());

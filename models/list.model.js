@@ -7,20 +7,24 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
     },
     title: {
-      type: Sequelize.STRING
-    },
-    email: {
-      type: Sequelize.STRING
-    },
-    password: {
+      allowNull: false,
+      defaultValue: '',
       type: Sequelize.STRING
     }
   }, {
+    timestamps: true,
     underscored: true
   });
-  // 리스트가 속한 보드
+
+  //관계 설정
+  //리스트에 입력된 카드들
   list.associate = function(models) {
-    list.belongsTo(models.boards);
+    list.hasMany(models.cards, { 
+      //외래키 생성 설정
+      foreignKey: { allowNull: false }, 
+      //리스트 삭제시 카드 같이 삭제
+      onDelete: 'CASCADE' 
+    });
   };
   return list;
 };
