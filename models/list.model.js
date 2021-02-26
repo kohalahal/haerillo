@@ -18,13 +18,9 @@ module.exports = (sequelize, Sequelize) => {
   }, {
     underscored: true
   });
-  
-  // 관계 설정
-  // 리스트에 입력된 카드들
+  // 리스트가 속한 보드
   list.associate = function(models) {
-    list.hasMany(models.cards, {
-      foreignKey: 'listId'
-    });
+    list.belongsTo(models.boards);
   };
   return list;
 };

@@ -17,9 +17,10 @@ module.exports = (sequelize, Sequelize) => {
     underscored: true
   });
   // 관계 설정
-  // 보드에 입력된 리스트
+  // 보드에 접근 가능한 유저
   board.associate = function(models) {
-    board.hasMany(models.lists, {
+    board.belongsToMany(models.users, {
+      through: 'users_boards',
       foreignKey: 'boardId'
     });
   };
