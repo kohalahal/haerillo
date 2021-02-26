@@ -5,10 +5,9 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
-      type: Sequelize.INTEGER
-    },
     title: {
+      allowNull: false,
+      defaultValue: '',
       type: Sequelize.STRING
     },
     createdAt: Sequelize.DATE,
@@ -16,12 +15,22 @@ module.exports = (sequelize, Sequelize) => {
   }, {
     underscored: true
   });
+  
   // 관계 설정
-  // 보드에 접근 가능한 유저
+  // 보드에 접근 가능한 유저들
   board.associate = function(models) {
     board.belongsToMany(models.users, {
       through: 'users_boards',
       foreignKey: 'boardId'
+    });
+  };
+  // 보드에 입력된 리스트들
+  board.associate = function(models) {
+    board.hasMany(models.lists, { 
+      //외래키 생성 설정
+      foreignKey: { allowNull: false }, 
+      //보드 삭제시 리스트 같이 삭제
+      onDelete: 'CASCADE' 
     });
   };
   return board;

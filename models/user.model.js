@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   // 관계 설정
-  // 유저가 접근 가능한 보드
+  // 유저가 접근 가능한 보드들
   user.associate = function(models) {
     user.belongsToMany(models.boards, {
       through: 'users_boards',
