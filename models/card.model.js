@@ -15,7 +15,12 @@ module.exports = (sequelize, Sequelize) => {
     updatedAt: Sequelize.DATE,
   }, {
   underscored: true
-});
+  });
+  // 관계 설정
+  // 카드가 속한 리스트
+  card.associate = function(models) {
+    card.belongsTo(models.lists);
+  };
 
   return card;
 };
