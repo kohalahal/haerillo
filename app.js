@@ -1,14 +1,16 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var mysql = require('mysql');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mysql = require('mysql2/promise');
+const sequelize = require('./models/index');
 
-var indexRouter = require('./routes/index');
-var boardRouter = require('./routes/board');
-var registerRouter = require('./routes/register');
+const indexRouter = require('./routes/index');
+const boardRouter = require('./routes/board');
+const registerRouter = require('./routes/register');
 
-var app = express();
+const app = express();
+sequelize.sequelize.sync();
 
 app.use(logger('dev'));
 app.use(express.json());
