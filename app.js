@@ -9,12 +9,13 @@ const boardRouter = require('./routes/boards');
 const userRouter = require('./routes/users');
 
 const app = express();
-sequelize.sequelize.sync().then(() => {
-      console.log('db 초기화 완료');
-    }).catch((err) => {
-        console.error('db 초기화 실패');
-        console.error(err);
-    });
+
+// sequelize.sequelize.sync({force: true, logging: false}).then(() => {
+//       console.log('db 초기화 완료');
+//     }).catch((err) => {
+//         console.error('db 초기화 실패');
+//         console.error(err);
+//     }).finally(() => sequelize.sequelize.close());
 
 app.use(logger('dev'));
 app.use(express.json());
