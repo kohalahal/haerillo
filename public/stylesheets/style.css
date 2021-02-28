@@ -1,8 +1,123 @@
+/* _________________________________________________
+
+For: Haerillo
+Original Author: Haeri Lee
+URL: 
+____________________________________________________
+
+`GLOSSARY`:
+
+  NORMALIZE (instead of reset)
+
+  ROOT
+  TYPOGRAPHY
+  BASE STYLES
+    -LINKS
+    -FIGURES & IMAGES
+    -TABLES
+    -FORMS
+  STRUCTURE
+    -HEADER
+    -FOOTER
+    -MAIN STRUCTURE
+  GENERAL CONTENT
+  ...
+  MEDIA QUERIES
+  UTILITY CLASSES
+  PRINT QUERIES
+
+`COLOURS`:
+  colorname : #value ;
+
+____________________________________________________ */
+
+
+/*  `ROOT`
+------------------------------------------------------------------*/
+
+html {
+  /* 나머지 폰트는 rem 단위 */
+  font-size: 15px;
+}
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: rgb(255, 224, 212);
 }
 
-a {
-  color: #00B7FF;
+
+/*  `TYPOGRAPHY` (Base)
+------------------------------------------------------------------*/
+
+body {
+  color: rgb(65, 18, 0);
 }
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
+  /* shared typographic styles */
+}
+h1 { 
+  font-size: 3rem;
+}
+h2 { 
+  font-size: 2rem;
+}
+h3 { 
+  font-size: 1.8rem;
+}
+h4 { 
+  font-size: 1rem;
+}
+h5 { 
+  font-size: 0.8rem;
+}
+h6 { 
+  font-size: 0.5rem;
+}
+
+
+/*  `BASE STYLES`
+------------------------------------------------------------------*/
+
+/*-- ~LINKS --*/
+
+/*-- ~FIGURES & IMAGES --*/
+
+/*-- ~TABLES --*/
+
+/*-- ~FORMS --*/
+
+
+/*  `HEADER`
+------------------------------------------------------------------*/
+nav ul{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-container{
+
+}
+
+
+/*  `FOOTER`
+------------------------------------------------------------------*/
+
+
+/*  `MAIN STRUCTURE`
+------------------------------------------------------------------*/
+
+
+/*  `GENERAL CONTENT`
+------------------------------------------------------------------*/
+
+
+/*  `SPECIFIC PAGE`
+------------------------------------------------------------------*/
+
+
+/*  `UTILITY STYLES`
+------------------------------------------------------------------*/
