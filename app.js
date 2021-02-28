@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mysql = require('mysql2/promise');
 const sequelize = require('./models/index');
+const passport = require('passport');
+const passportConfig = require('./config/passport.config');
 const pageRouter = require('./routes/pages');
 const boardRouter = require('./routes/boards');
 const userRouter = require('./routes/users');
@@ -21,6 +23,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(passport.initialize());
+passportConfig();
 
 //홈페이지 핸들링 옵션
 //1.홈페이지를 스태틱 페이지로
