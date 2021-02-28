@@ -77,54 +77,6 @@ h6 {
   font-size: 0.5rem;
 }
 
-p, 
-ol, 
-ul, 
-dl, 
-address { 
-  
-}
-ul, 
-ol { 
-  
-}
-ul {}
-ol {}
-li ul, 
-li ol { 
-  
-}
-nav ul{
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-dl, 
-dd {}
-dt {}
-
-blockquote  {}
-
-b, 
-strong  {}
-i, 
-em {}
-
-sup, 
-sub {}
-sup {}
-sub {}
-
-address {}
-
-pre {}
-
-pre, 
-code {}
-
-small {}
-
 
 /*  `BASE STYLES`
 ------------------------------------------------------------------*/
@@ -140,6 +92,15 @@ small {}
 
 /*  `HEADER`
 ------------------------------------------------------------------*/
+nav ul{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-container{
+
+}
 
 
 /*  `FOOTER`
