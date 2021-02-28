@@ -3,10 +3,18 @@ const router = express.Router();
 const models = require('../models');
 const path = require('path');
 
-// router.get('/', function(req, res, next) {
-//   res.sendFile();
-// });
+/* TODO :
+  GET
+    1.이메일 체크
+    2.유저네임 중복체크
+  
+  POST
+    1.회원가입
+    2.로그인
+    3.토큰 리프레쉬
+    4.로그아웃
 
+  */
 /* POST 로 새로운 회원 가입 정보 보낼때 */
 router.post('/', function(req, res, next) {
   console.log('가입post');
