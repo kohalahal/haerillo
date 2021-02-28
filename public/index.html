@@ -1,28 +1,65 @@
 <html>
 
-<head>
-  <title>Welcome to Haerillo</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
+  <head>
+    <title>Welcome to Haerillo</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+  </head>
 
-<body>
-  <div class="nav-container">
-    <nav class="nav">
-      <ul class="nav-ul">
-        Haerillo
-      </ul>
-      <ul class="nav-ul">
-        Haerillo
-      </ul>
-      <ul class="nav-ul">
-        Haerillo
-      </ul>
-    </nav>
+  <body>
+    <div class="nav-container">
+      <header>
+        <div class="logo">
+          <a>Haerillo</a>
+        </div>
+      </header>
+      <nav>
+        <ul>
+          <li class="nav-ul">
+            <a>Board</a>
+          </li>
+          <li class="nav-ul">
+            <a>Login</a>
+          </li>
+          <li class="nav-ul">
+            <a>Signup</a>
+          </li>
+        </ul>
+      </nav>
 
-  </div>
-  <h1>Haerillo</h1>
-  <p>Create Your Own Boards</p>
-  <p>Shared Them With Your Team</p>
-</body>
+    </div>
+    <h1>Haerillo</h1>
+    <p>Create Your Own Boards</p>
+    <p>Shared Them With Your Team</p>
 
+    <div id="sse">
+
+    </div>
+    
+    <button class="btn" onclick="btnClick()">btn</button>
+  </body>
+  <script>
+
+    // const sse = new EventSource('http://localhost:3000/stream');
+    // sse.onmessage = function(e) {
+    //   console.log('event'+e.data);
+    //   var news = document.createElement('div');
+    //   news.innerHTML = e.data;
+    //   document.getElementById('sse').appendChild(news);
+    // };
+
+    // function btnClick() {
+    //   // const form = document.createElement('form');
+    //   // form.method = 'post';
+    //   // form.path = '/users';
+    //   // form.appendChild(docu)
+    //   var xhr = new XMLHttpRequest();
+    //   xhr.open("POST", '/users', true);
+    //   xhr.setRequestHeader('Content-Type', 'application/json');
+    //   xhr.send(JSON.stringify({
+    //       username: 'value'
+    //   }));
+    // };
+
+
+  </script>
 </html>
