@@ -25,12 +25,16 @@ app.use('/', express.static(__dirname + '/public'));
 app.use('/register', express.static(__dirname + '/public/register.html'));
 app.use('/login', express.static(__dirname + '/public/login.html'));
 
-// app.use('/', indexRouter);
-// app.use('/board', boardRouter);
-// app.use('/register', registerRouter);
-// app.use('/login', loginRouter);
-
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 
+app.get('/stream', (req, res) => {
+    res.setHeader("Content-Type", "text/event-stream");
+    setInterval(function() {
+        console.log('interval');
+        res.write('data: '+'news\n\n');
+    }, 4000);
+});
+
+// app.listen(3000);
 module.exports = app;

@@ -3,6 +3,10 @@ const router = express.Router();
 const models = require('../models');
 const path = require('path');
 
+// router.get('/', function(req, res, next) {
+//   res.sendFile();
+// });
+
 /* POST 로 새로운 회원 가입 정보 보낼때 */
 router.post('/', function(req, res, next) {
   console.log('가입post');
@@ -17,7 +21,7 @@ router.post('/', function(req, res, next) {
   })
   .then( result => {
     console.log('가입');
-    res.redirect("/login");
+    // res.redirect("/login");
   })
   .catch( err => {
     console.log(err);
