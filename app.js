@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mysql = require('mysql2/promise');
 const sequelize = require('./models/index');
-
+const pageRouter = require('./routes/pages');
 const boardRouter = require('./routes/boards');
 const userRouter = require('./routes/users');
 
@@ -21,20 +21,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', express.static(__dirname + '/public'));
-app.use('/register', express.static(__dirname + '/public/register.html'));
-app.use('/login', express.static(__dirname + '/public/login.html'));
+//홈페이지 핸들링 옵션
+//1.홈페이지를 스태틱 페이지로
+// app.use('/', express.static(__dirname + '/public'));
+//2.홈페이지를 페이지 라우터로
+app.get('/', function(req, res) {
+    res.redirect('/pages');
+});
 
+//페이지 라우터
+app.use('/pages', pageRouter);
+//api 라우터
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 
-app.get('/stream', (req, res) => {
-    res.setHeader("Content-Type", "text/event-stream");
-    setInterval(function() {
-        console.log('interval');
-        res.write('data: '+'news\n\n');
-    }, 4000);
-});
+// app.get('/stream', (req, res) => {
+//     res.setHeader("Content-Type", "text/event-stream");
+//     setInterval(function() {
+//         console.log('interval');
+//         res.write('data: '+'news\n\n');
+//     }, 4000);
+// });
 
 // app.listen(3000);
 module.exports = app;
