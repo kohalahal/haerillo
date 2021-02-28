@@ -23,11 +23,11 @@ app.use(cookieParser());
 
 //홈페이지 핸들링 옵션
 //1.홈페이지를 스태틱 페이지로
-// app.use('/', express.static(__dirname + '/public'));
+app.use('/', express.static(__dirname + '/public'));
 //2.홈페이지를 페이지 라우터에서 핸들
-app.get('/', function(req, res) {
-    res.redirect('/pages');
-});
+// app.get('/', function(req, res) {
+//     res.redirect('/pages');
+// });
 
 //페이지 라우터
 app.use('/pages', pageRouter);
