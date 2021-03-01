@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <title>Board</title>
 </head>
@@ -36,12 +37,21 @@
             <ul class="list-container">
               <li class="list">
                 <div class="text-container">
-                  <div class="list-title">
+                  <div class="list-title text">
                     <h4>리스트 제목</h4>
                   </div>
-                  <button>OK</button>
+                  <i class="fas fa-trash-alt delete-btn"></i>
                 </div>
                 <ul class="card-container">
+                  <li class="card">
+                    <div class="text-container">
+                      <div class="card-title text">
+                        카드 제목
+                      </div>
+
+                      <i class="fas fa-trash-alt delete-btn"></i>
+                    </div>
+                  </li>
                   <li class="card">
                     <div class="text-container">
                       <textarea class="list-input"></textarea>
@@ -54,7 +64,7 @@
               <li class="list">
                 <div class="text-container">
                   <input type="text" class="list-input">
-                  <button>OK</button>
+                  <i class="fas fa-trash-alt"></i>
                 </div>
                 <ul class="card-container">
                   <li class="card">
@@ -188,6 +198,31 @@
                 <ul class="card-container">
                   
                 </ul>
+              </li>
+              <li class="list">
+                <div class="text-container">
+                  <input type="text" class="list-input">
+                  <button>OK</button>
+                </div>
+                <ul class="card-container">
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card inactive">
+                    <div class="text-container text">
+                      + 카드 등록
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <li class="list inactive">
+                <div class="text-container text">
+                  + 리스트 등록
+                </div>
+                
               </li>
             <!-- end of list-container -->
             </ul>
@@ -198,7 +233,7 @@
       <!-- end of main-container -->
       </div>
   </section>
-
+  <script src="https://kit.fontawesome.com/a18004eea6.js" crossorigin="anonymous"></script>
   <script type="text/javascript">
     function logout() {
       //token 삭제

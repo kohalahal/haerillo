@@ -192,6 +192,7 @@ nav ul li a {
   background-color: #c5d2c8;
   min-height: 75vh;
   border-radius: 5px;
+  padding: 0 10px;
 }
 .board-title {
   padding: 20px;
@@ -215,26 +216,41 @@ nav ul li a {
   -moz-box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
   box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
 }
+.list.inactive {
+  background-color: #d2dcd4;
+}
+.list.inactive .text {
+  color: #796a6a;
+}
 .card-container{
   list-style-type: none;
   margin: 0;
   padding: 0;
   width: 100%;
-  background-color: white;
 }
 .card {
-
+  margin: 4px;
+  background-color: white;
+  border-radius: 2px;
+}
+.card:hover, .card.hover {
+  background-color: #f6faf7;
+}
+.card.inactive {
+  background-color: #d2dcd4;
+}
+.card.inactive .text {
+  color: #796a6a;
 }
 .text-container {
-  padding: 5px;
+  padding: 8px 6px;
   display: flex;
-  height: 27px;
 }
 .text-container input {
   width: 80%;
 }
 .text-container textarea {
-  width: 80%;
+  width: 100%;
   height: auto;
   margin-bottom: 4px;
   max-height: 162px;
@@ -243,7 +259,19 @@ nav ul li a {
 .text-container button {
   width: auto;
 }
-
+.delete-btn {
+  display: none !important;
+  position: absolute;
+  right: 25px;
+  cursor: pointer;
+}
+/* 텍스트컨테이너 호버시 삭제버튼 */
+.text-container:hover .delete-btn, .text-container.hover .delete-btn {
+  display: block !important; 
+}
+.text {
+  cursor: pointer;
+}
 /* for flexbox */
 @supports(display: flex) {
   .list-container {
@@ -261,7 +289,7 @@ nav ul li a {
 @supports(display: grid) {
   .list-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
   }
   
   .list-container li {
