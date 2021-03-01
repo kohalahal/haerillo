@@ -36,19 +36,30 @@ ____________________________________________________ */
 ------------------------------------------------------------------*/
 
 html {
-  /* 나머지 폰트는 rem 단위 */
-  font-size: 15px;
+
 }
 body {
-  background-color: rgb(255, 224, 212);
+  margin: 0;
+  background-color: #fbf4ea;
+  
 }
 
 
 /*  `TYPOGRAPHY` (Base)
 ------------------------------------------------------------------*/
+/* 폰트 */
+/* 로고폰트 */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+.logo {
+  font-family: 'Bebas Neue', cursive;
+}
 
+html {
+  /* 나머지 폰트는 rem 단위 */
+  font-size: 15px;
+}
 body {
-  color: rgb(65, 18, 0);
+  color: rgb(37, 12, 2);
 }
 h1, 
 h2, 
@@ -57,6 +68,7 @@ h4,
 h5, 
 h6 {
   /* shared typographic styles */
+  margin: 0;
 }
 h1 { 
   font-size: 3rem;
@@ -68,7 +80,7 @@ h3 {
   font-size: 1.8rem;
 }
 h4 { 
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 h5 { 
   font-size: 0.8rem;
@@ -76,7 +88,10 @@ h5 {
 h6 { 
   font-size: 0.5rem;
 }
-
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
 /*  `BASE STYLES`
 ------------------------------------------------------------------*/
@@ -92,15 +107,42 @@ h6 {
 
 /*  `HEADER`
 ------------------------------------------------------------------*/
+
+header{
+  width: 100%;
+  height: 80px;  
+  /* background-color: #7d135a; */
+}
+.logo {
+  float: left;
+  margin: 17px 30px;
+  font-size: 2.2rem;
+}
+nav {
+  padding: 20px 0;
+  height: 40px;
+  float: right;
+}
 nav ul{
   list-style-type: none;
-  padding: 0;
+  padding: 0 20px;
   margin: 0;
 }
-
-.nav-container{
-
+nav ul li {
+  display: inline-block;
+  margin: 10px 10px;
 }
+
+nav ul li a {  
+  /* color: white; */
+
+	/* display: block; */
+	/* padding: 20px 1vw;
+  margin: 10px 0; */
+}
+
+
+
 
 
 /*  `FOOTER`
@@ -109,6 +151,24 @@ nav ul{
 
 /*  `MAIN STRUCTURE`
 ------------------------------------------------------------------*/
+.main-container {
+  padding-top: 3vh;
+  position: relative;
+  height: 91vh;
+  margin: 0 5vw;
+}
+
+/* 화면 중앙에 위치하는 컨테이너 ex)로그인창 */
+.center-container {
+  width: 500px;
+  height: 300px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
 
 
 /*  `GENERAL CONTENT`
@@ -117,7 +177,97 @@ nav ul{
 
 /*  `SPECIFIC PAGE`
 ------------------------------------------------------------------*/
+/* 홈페이지 index */
 
+/* 로그인 login 페이지 */
+.login {
+  background-color: coral;
+}
+/* 회원가입 join 페이지 */
+.join {
+  background-color: green;
+}
+/* 보드 board 페이지 */
+.board {
+  background-color: #c5d2c8;
+  min-height: 75vh;
+  border-radius: 5px;
+}
+.board-title {
+  padding: 20px;
+  text-align: center;
+}
+.list-container {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.list {
+  position: relative;
+  overflow: hidden;
+  background-color: #e1eae3;
+  padding: 10px;
+  margin: 10px;
+  height: fit-content;
+  border-radius: 5px;
+  -webkit-box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
+  -moz-box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
+  box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
+}
+.card-container{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: white;
+}
+.card {
+
+}
+.text-container {
+  padding: 5px;
+  display: flex;
+  height: 27px;
+}
+.text-container input {
+  width: 80%;
+}
+.text-container textarea {
+  width: 80%;
+  height: auto;
+  margin-bottom: 4px;
+  max-height: 162px;
+  min-height: 54px;
+}
+.text-container button {
+  width: auto;
+}
+
+/* for flexbox */
+@supports(display: flex) {
+  .list-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .list-container li {
+    display: block;
+    float: none;
+  }
+}
+
+/* for grid */
+@supports(display: grid) {
+  .list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  .list-container li {
+    width: auto;
+  }
+}
 
 /*  `UTILITY STYLES`
 ------------------------------------------------------------------*/

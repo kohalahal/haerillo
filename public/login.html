@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <title>Login</title>
 </head>
 <body>
@@ -17,24 +18,26 @@
     </header>
     <section>
         <div class="main-container">
-            <div class="center-container">
+            <div class="center-container login">
                 <div class="form-container">
                     <div class="form-inform">
 
                     </div>
-                    <form action="/users/login" method="post" class="register-form">
-                    
-                        <label>UserName</label>
-                        <input type="text" name="username">
-
-                        <label>Password</label>
-                        <input type="password" name="password">
+                    <form action="/auth/login" method="post" class="register-form">
+                        <div class="input-container">
+                            <label>username</label>
+                            <input type="text" name="username">
+                        </div>
+                        <div class="input-container">
+                            <label>password</label>
+                            <input type="password" name="password">
+                        </div>
                         
                         <button type="submit" class="login-btn">Login</button>
                         
                     </form>
                     <div class="form-tail">
-                        비회원이시라면.. <a>Join</a>
+                        비회원이시라면.. <a href="/pages/join">Join</a>
                     </div>
                 <!-- end of form-container -->
                 </div>
