@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <title>Welcome To Join Haerillo</title>
 </head>
 <body>
@@ -17,24 +18,28 @@
     </header>
     <section>
         <div class="main-container">
-            <div class="center-container">
+            <div class="center-container join">
                 <div class="form-container">
                     <div class="form-inform">
 
                     </div>
-                    <form action="/users" method="post" class="register-form">
-                    
-                        <label>User Name</label>
-                        <input type="text" name="username">
-        
-                        <label>Email</label>
-                        <input type="text" name="email">
-        
-                        <label>Password</label>
-                        <input type="password" name="password">
-        
-                        <label>Confirm Password</label>
-                        <input type="password" name="passwordConfirm">
+                    <form action="/auth/join" method="post" class="register-form">
+                        <div class="input-container">
+                            <label>username</label>
+                            <input type="text" name="username">
+                        </div>
+                        <div class="input-container">
+                            <label>email</label>
+                            <input type="text" name="email">
+                        </div>
+                        <div class="input-container">
+                            <label>password</label>
+                            <input type="password" name="password">
+                        </div>
+                        <div class="input-container">
+                            <label>confirm password</label>
+                            <input type="password" name="passwordConfirm">
+                        </div>
         
         
                         
@@ -43,7 +48,7 @@
                     </form>
 
                     <div class="form-tail">
-                        회원이시라면.. <a>Login</a>
+                        회원이시라면.. <a href="/pages/login">Login</a>
                     </div>
                 <!-- end of form-container -->
                 </div>
