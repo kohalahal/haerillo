@@ -31,6 +31,7 @@ module.exports = (sequelize, Sequelize) => {
   // 유저가 접근 가능한 보드들
   User.associate = function(models) {
     User.belongsToMany(models.boards, {
+      as: 'Board',
       through: 'users_boards',
       foreignKey: 'user_id'
     });

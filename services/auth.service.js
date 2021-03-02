@@ -97,7 +97,7 @@ async function authorize(req, res, next) {
         if (!user) {
           res.status(http.StatusCodes.UNAUTHORIZED).json({ message: message });
         } else {
-            const token = jwt.sign({
+            let token = jwt.sign({
                 id: user.id, 
                 username : user.username
             }, // 토큰에 입력할 private 값
@@ -112,3 +112,5 @@ async function authorize(req, res, next) {
 
 exports.register = register;
 exports.authorize = authorize;
+exports.checkUsername = checkUsername;
+exports.checkEmail = checkEmail;
