@@ -10,6 +10,10 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       defaultValue: '',
       type: Sequelize.STRING
+    },
+    index: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     }
   }, {
     timestamps: true,

@@ -7,9 +7,13 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
     },
     content: {
+      type: Sequelize.STRING,
       allowNull: false,
-      defaultValue: '',
-      type: Sequelize.STRING
+      defaultValue: ''
+    },
+    index: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     }
   }, {
     timestamps: true,
