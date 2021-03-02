@@ -4,8 +4,8 @@ const authService = require('../services/auth.service');
 
 /* TODO :
   GET
-    1.이메일 체크
-    2.유저네임 중복체크
+    1.유저네임 체크
+    2.이메일 중복체크
   
   POST
     1.회원가입
@@ -15,9 +15,15 @@ const authService = require('../services/auth.service');
   */
 
 /* GET */
-/* 1.이메일체크 */
-/* 2.유저네임체크 */
+/* 1.유저네임 중복체크 */
+router.get('/username/:username', function (req, res) {
+  res.status(http.StatusCodes.OK).json({ result: authService.checkUsername(req.params.username) });
+});
 
+/* 2.이메일 중복체크 */
+router.get('/email/:email', function (req, res) {
+  res.status(http.StatusCodes.OK).json({ result: authService.checkEmail(req.params.email) });
+});
 
 /* POST */
 /* 1.회원가입 */
