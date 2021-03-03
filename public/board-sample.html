@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <title>Board</title>
+</head>
+<body>
+  <header>
+      <div class="nav-container">
+        <div class="logo">
+          <a href="../">Haerillo</a>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <button onclick="logout();">Logout</button>
+            </li>
+          </ul>
+        </nav>
+      <!-- end of nav-container -->
+      </div>
+  </header>
+  <section>
+      <div class="main-container">
+
+          <!-- TODO
+          보드, 리스트, 카드 모양 만들기 -->
+
+          <div class="board">
+            <div class="board-title">
+              <h3>보드 제목</h3>
+            </div>
+            <ul class="list-container">
+              <li class="list">
+                <div class="text-container">
+                  <div class="delete-btn">
+                    <i class="fas fa-trash-alt "></i>
+                  </div>
+                  <div class="list-title text">
+                    <h4>리스트 제목</h4>
+                  </div>
+                  
+                </div>
+                <ul class="card-container">
+                  <li class="card active">
+                    <div class="delete-btn">
+                      <i class="fas fa-trash-alt "></i>
+                    </div>
+                    <div class="text-container">
+                      <div class="card-content text">
+                        카드 제목
+                      </div>
+                      
+                    </div>
+                  </li>
+                  <li class="card active">
+                    <div class="delete-btn">
+                      <i class="fas fa-trash-alt "></i>
+                    </div>
+                    <div class="text-container">
+                      <div class="card-title text">
+                        카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목카드 제목
+                      </div>
+
+                      
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <textarea class="list-input"></textarea>
+                      <div class="ok-btn-container">
+                        <a class="ok-btn">OK</a>
+                      </div>
+                    </div>
+                  </li>
+                  
+                </ul>
+              </li>
+              <li class="list">
+                <div class="text-container">
+                  <input type="text" class="list-input">
+                  <i class="fas fa-trash-alt"></i>
+                </div>
+                <ul class="card-container">
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <li class="list">
+                <div class="text-container">
+                  <input type="text" class="list-input">
+                  <button>OK</button>
+                </div>
+                <ul class="card-container">
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  
+                </ul>
+              </li>
+              <li class="list">
+                <div class="text-container">
+                  <input type="text" class="list-input">
+                  <button>OK</button>
+                </div>
+                <ul class="card-container">
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <li class="list">
+                <div class="text-container">
+                  <input type="text" class="list-input">
+                  <a class="ok-btn">OK</a>
+                </div>
+                <ul class="card-container">
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <li class="list">
+                <div class="text-container">
+                  <input type="text" class="list-input">
+                  <button>OK</button>
+                </div>
+                <ul class="card-container">
+                  
+                </ul>
+              </li>
+              <li class="list">
+                <div class="text-container">
+                  <div class="input-container">
+                    <input type="text" class="list-input">
+
+                  </div>
+                  <div class="ok-btn-container">
+                    <a class="ok-btn">OK</a>
+                  </div>
+                </div>
+                <ul class="card-container">
+                  <li class="card">
+                    <div class="text-container">
+                      <input type="text" class="list-input">
+                      <button>OK</button>
+                    </div>
+                  </li>
+                  <li class="card inactive">
+                    <div class="text-container text">
+                      + 카드 등록
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <li class="list inactive">
+                <div class="text-container text">
+                  + 리스트 등록
+                </div>
+                
+              </li>
+            <!-- end of list-container -->
+            </ul>
+
+          <!-- end of board -->
+          </div>
+
+      <!-- end of main-container -->
+      </div>
+  </section>
+  <script src="https://kit.fontawesome.com/a18004eea6.js" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    function logout() {
+      //token 삭제
+      window.localStorage.removeItem("token");
+      //홈페이지로
+      window.location.href = '../';
+    }
+
+
+      /* TODO
+          0.보드 정보 받아와서 보여주기
+          1.보드,리스트,카드 입력시 POST
+          2.드래그 앤 드롭으로 수정 & POST
+          3.SSE 이벤트 데이터로 보드 갱신
+              1.2.3 실패시 로그인 창으로 보내기
+      */
+
+      // const sse = new EventSource('http://localhost:3000/stream');
+      // sse.onmessage = function(e) {
+      //   console.log('event'+e.data);
+      //   var news = document.createElement('div');
+      //   news.innerHTML = e.data;
+      //   document.getElementById('sse').appendChild(news);
+      // };
+  
+      // function btnClick() {
+      //   // const form = document.createElement('form');
+      //   // form.method = 'post';
+      //   // form.path = '/users';
+      //   // form.appendChild(docu)
+      //   var xhr = new XMLHttpRequest();
+      //   xhr.open("POST", '/users', true);
+      //   xhr.setRequestHeader('Content-Type', 'application/json');
+      //   xhr.send(JSON.stringify({
+      //       username: 'value'
+      //   }));
+      // };
+  
+  
+    </script>
+  
+</body>
+</html>
