@@ -3,13 +3,12 @@ const Board = require("../models").boards;
 const List = require("../models").lists;
 const Card = require("../models").cards;
 
-const authConfig = require('../config/auth.config');
-const jwt = require("jsonwebtoken");
-const http = require('http-status-codes');
+
+
 
 /* TODO :
 
-    0. 토큰에서 유저 정보(숫자 id) 가져오기
+    db crud 실패하면! 오류만들기.
 
     Create
     1.보드 등록
@@ -19,7 +18,6 @@ const http = require('http-status-codes');
     Read
     1.보드 목록 주기
     2.보드 정보 주기
-    3.변경 사항 보내기
       
     Update
     1.보드 수정
@@ -35,68 +33,70 @@ const http = require('http-status-codes');
 
   */
 
-/* 0.토큰에서 유저 정보 가져오기 */
-async function getUserId(req) {
-    if (req.headers && req.headers.authorization) {
-        let authorization = req.headers.authorization.split(' ')[1],
-            decoded;
-        try {
-            decoded = jwt.verify(authorization, authConfig.secret);
-        } catch (error) {
-            console.log('유저찾기 실패');
-        }
-        return decoded.id;
-    }
-    console.log('유저찾기 실패');
-    return null;
-}
+
 
 
 /*  Create */
 /*  1.보드 생성 */
-async function createBoard(req, res, next) {   
-    let userId = getUserId(req);
-    let boardInput = {
-            title: req.body.title ?? '',
-        };
-    /* 보드를 만들고, 글쓴이 유저와 연관관계 설정 */
-    Board.create(boardInput).then((board) => {
-            User.findOne({ where: userId }).then((user) => {
-                user.addBoard(board);
-            });
-        });
+async function createBoard(boardInput, userId) {
+    /* 보드를 만들고, 쟉성자 유저와 연관관계 설정 */
+    let board = await Board.create(boardInput);
+    let user = await User.findOne({ where: userId });
+    await user.addBoard(board);
     console.log('new board');
-    res.status(http.StatusCodes.CREATED).json({ message: '보드 생성' });
+    return true;
+ 
 }
 /*  2.리스트 생성 */
-async function createList(req, res, next) {
-    let listInput = {
-        boardId: req.body.board_id,
-        title: req.body.title ?? '',
-        index: req.body.index
-    };
-    await List.create(listInput).then(function(list) {
-        console.log('new list');
-        res.status(http.StatusCodes.CREATED).json({ message: '리스트 생성' });
-    });
+async function createList(listInput) {
+    let list = await List.create(listInput);
+    console.log('new list');
+    return true;
 }
 /*  3.카드 생성 */
-async function createCard(req, res, next) {
-    let cardInput = {
-        listId: req.body.list_id,
-        content: req.body.content ?? '',
-        index: req.body.index
-    };
-    await Card.create(cardInput).then(function(card) {
-        console.log('new card');
-        res.status(http.StatusCodes.CREATED).json({ message: '카드 생성' });
-    });
+async function createCard(cardInput) {
+    let card = Card.create(cardInput);
+    console.log('new card');
+    return true;
 }
 
 /*  Read */
 /*  1.보드 목록 주기 */
+async function getBoardList(userId) {
+    let user, boards;
+    user = await User.findOne({
+        where: {
+            id: userId
+          }
+    });
+    boards = await user.getBoards();
+    return boards;
+}
 /*  2.보드 정보 주기 */
-/*  3.변경 사항 보내기 */
+async function getBoard(userId, boardId) {
+    let user, board;
+    user = await User.findOne({
+        where: {
+            id: userId
+        }
+    });
+    board = await Board.findOne({
+        where: {
+            id: boardId
+        },
+        include: [{
+            model: List,
+            required: false,            
+            include: [{
+                model: Card,
+                required: false                
+            }]
+        }]
+    });
+    console.log(board);
+    if(await user.hasBoard(board)) return board;
+    return null;
+}
    
 /*  Update */
 /*  1.보드 수정 */
@@ -114,3 +114,5 @@ async function createCard(req, res, next) {
 exports.createBoard = createBoard;
 exports.createList = createList;
 exports.createCard = createCard;
+exports.getBoardList = getBoardList;
+exports.getBoard = getBoard;
