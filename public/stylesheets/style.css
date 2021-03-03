@@ -103,7 +103,9 @@ a {
 /*-- ~TABLES --*/
 
 /*-- ~FORMS --*/
-
+textarea:focus{
+  outline: none;
+}
 
 /*  `HEADER`
 ------------------------------------------------------------------*/
@@ -222,6 +224,9 @@ nav ul li a {
 .list.inactive .text {
   color: #796a6a;
 }
+.list.text-container {
+  height: 30px;
+}
 .card-container{
   list-style-type: none;
   margin: 0;
@@ -233,7 +238,12 @@ nav ul li a {
   background-color: white;
   border-radius: 2px;
 }
-.card:hover, .card.hover {
+.card.active {
+  -webkit-box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
+  -moz-box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
+  box-shadow: 4px 4px 18px -5px rgba(0,0,0,0.21);
+}
+.card.active:hover {
   background-color: #f6faf7;
 }
 .card.inactive {
@@ -244,29 +254,58 @@ nav ul li a {
 }
 .text-container {
   padding: 8px 6px;
-  display: flex;
+}
+.input-container {
+  width: 80%;
 }
 .text-container input {
   width: 80%;
 }
 .text-container textarea {
-  width: 100%;
+  width: 98%;
   height: auto;
   margin-bottom: 4px;
   max-height: 162px;
   min-height: 54px;
 }
-.text-container button {
-  width: auto;
+.ok-btn-container {
+  text-align: right;
 }
-.delete-btn {
-  display: none !important;
-  position: absolute;
-  right: 25px;
+.list .ok-btn {
+  display: inline-block;
+  padding: 5px 3%;
+  border: 1px solid #c6d0c5;
+  border-radius: 3px;
   cursor: pointer;
 }
+.card .ok-btn {
+  display: inline-block;
+  padding: 6px 20px;
+  border: 1px solid #c6d0c5;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.ok-btn:hover {
+  color: black;
+  background-color: #d3adade3;
+}
+.delete-btn {
+  /* display: none !important; */
+  position: absolute;
+  right: 16px;
+  height: 31px;
+  width: 29.13px;
+  margin: 3px;
+  background-color: #dfe4e0e3;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+.fa-trash-alt {
+  padding: 8px;
+}
 /* 텍스트컨테이너 호버시 삭제버튼 */
-.text-container:hover .delete-btn, .text-container.hover .delete-btn {
+.card.active:hover .delete-btn, .text-container:hover .delete-btn {
   display: block !important; 
 }
 .text {
