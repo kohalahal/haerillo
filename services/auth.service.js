@@ -91,20 +91,20 @@ async function register(req, res, next) {
 
 
 /* 4.로그인 */
-async function authorize(req, res, next) {
+function authorize(req, res, next) {
     console.log(',로그인');
     passport.authenticate('verify', { session: false }, (err, user, message) => {
         if (!user) {
-          res.status(http.StatusCodes.UNAUTHORIZED).json({ message: message });
+          res.json({ message: message });
         } else {
             let token = jwt.sign({
                 id: user.id, 
                 username : user.username
             }, // 토큰에 입력할 private 값
             authConfig.secret, // 나만의 시크릿키
-            { expiresIn: "15m" } // 토큰 만료 시간
+            { expiresIn: "15h" } // 토큰 만료 시간
             );
-            res.status(http.StatusCodes.OK).json({ token, message: message });
+            res.json({ token, message: message });
         }
       })(req, res, next);
 }
