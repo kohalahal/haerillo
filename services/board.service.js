@@ -3,6 +3,25 @@ const Board = require("../models").boards;
 const List = require("../models").lists;
 const Card = require("../models").cards;
 
+const streamRouter = require("../routes/stream");
+
+async function sendEvents(boardId) {
+    let board = await Board.findOne({
+        where: {
+            id: boardId
+        },
+        include: [{
+            model: List,
+            required: false,            
+            include: [{
+                model: Card,
+                required: false                
+            }]
+        }]
+    });
+    streamRouter.sendEvents(boardId, board);
+}
+
 
 
 
@@ -51,6 +70,7 @@ async function createBoard(boardInput, userId) {
 async function createList(listInput) {
     let list = await List.create(listInput);
     console.log('new list');
+    await sendEvents(listInput.boardId);
     return true;
 }
 /*  3.카드 생성 */
@@ -61,6 +81,7 @@ async function createCard(cardInput) {
     console.log('cardInput'+cardInput.index);
     let card = await Card.create(cardInput);
     console.log('new card');
+    await sendEvents(cardInput.boardId);
     return true;
 }
 
@@ -78,7 +99,7 @@ async function getBoardList(userId) {
 }
 /*  2.보드 정보 주기 */
 async function getBoard(userId, boardId) {
-    console.log('보드서비스 getBoard');
+    console.log('보드서비스 getBoard1');
     let user, board;
     user = await User.findOne({
         where: {
@@ -102,6 +123,28 @@ async function getBoard(userId, boardId) {
     if(await user.hasBoard(board)) return board;
     return null;
 }
+
+async function getBoardStream(boardId) {
+    console.log('보드서비스 getBoard2');
+    console.log(boardId);
+    let board;
+   
+    board = await Board.findOne({
+        where: {
+            id: boardId
+        },
+        include: [{
+            model: List,
+            required: false,            
+            include: [{
+                model: Card,
+                required: false                
+            }]
+        }]
+    });
+    console.log(board);
+    return board;
+}
    
 /*  Update */
 /*  1.보드 수정 */
@@ -121,3 +164,4 @@ exports.createList = createList;
 exports.createCard = createCard;
 exports.getBoardList = getBoardList;
 exports.getBoard = getBoard;
+exports.getBoardStream = getBoardStream;

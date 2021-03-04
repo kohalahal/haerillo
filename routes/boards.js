@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const authConfig = require('../config/auth.config');
 const boardService = require('../services/board.service');
 
+const streamingUsers = [];
 
 /* TODO :
   GET
@@ -45,13 +46,16 @@ router.get('/', async (req, res) => {
 router.get('/:boardId', async (req, res) => {
   let userId = getUserIdFromToken(req);
   let boardId = req.params.boardId;
-  if(!userId || !boardId) {
+  if(!userId || !boardId) {    
     res.status(http.StatusCodes.UNAUTHORIZED).json('보드에 권한이 없습니다.');
   }
+  console.log('@@@@@@'+boardId);
   let board = await boardService.getBoard(userId, boardId);
   console.log('받은 보드:'+board);
   if(board) {
     console.log('ㅇㅋ');
+    // res.setHeader("Content-Type", "text/event-stream");
+    // res.write(board+'\n\n');
     res.status(http.StatusCodes.OK).json(board);
   } else {
     console.log('ㄴㄴ');
@@ -91,7 +95,7 @@ router.post('/lists', async (req, res) => {
     title: req.body.title || '',
     index: req.body.index
   }
-  let isCompleted = boardService.createList(listInput);
+  let isCompleted = await boardService.createList(listInput);
   if(isCompleted) {
     res.status(http.StatusCodes.CREATED).json({ message: '리스트가 생성되었습니다.' });
   } else {
@@ -101,6 +105,7 @@ router.post('/lists', async (req, res) => {
 /*  3.카드 등록 */
 router.post('/lists/cards', async (req, res) => {
   let cardInput = {
+    boardId: req.body.board_id,
     listId: req.body.list_id,
     content: req.body.content || '',
     index: req.body.index
@@ -109,7 +114,7 @@ router.post('/lists/cards', async (req, res) => {
   console.log(req.body.list_id);
   console.log(req.body.content);
   console.log(req.body.index);
-  let isCompleted = boardService.createCard(cardInput);
+  let isCompleted = await boardService.createCard(cardInput);
   if(isCompleted) {
     res.status(http.StatusCodes.CREATED).json({ message: '카드가 생성되었습니다.' });
   } else {

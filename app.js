@@ -8,9 +8,9 @@ const sequelize = require('./models/index');
 // const passport = require('passport');
 const { passport } = require('./config/passport.config');
 
-const pageRouter = require('./routes/pages');
-const boardRouter = require('./routes/boards');
 const authRouter = require('./routes/auth');
+const boardRouter = require('./routes/boards');
+const streamRouter = require('./routes/stream');
 
 const app = express();
 
@@ -44,6 +44,8 @@ app.get('/join', function(req, res, next) {
 
 //api 라우터
 app.use('/auth', authRouter);
+app.use('/stream', streamRouter);
+
 app.use('/boards', passport.authenticate('jwt', {session: false}), boardRouter);
 
 // app.get('/stream', (req, res) => {
