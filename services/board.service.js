@@ -55,7 +55,11 @@ async function createList(listInput) {
 }
 /*  3.카드 생성 */
 async function createCard(cardInput) {
-    let card = Card.create(cardInput);
+    console.log('cardInput'+cardInput);
+    console.log('cardInput'+cardInput.listId);
+    console.log('cardInput'+cardInput.content);
+    console.log('cardInput'+cardInput.index);
+    let card = await Card.create(cardInput);
     console.log('new card');
     return true;
 }
@@ -74,6 +78,7 @@ async function getBoardList(userId) {
 }
 /*  2.보드 정보 주기 */
 async function getBoard(userId, boardId) {
+    console.log('보드서비스 getBoard');
     let user, board;
     user = await User.findOne({
         where: {

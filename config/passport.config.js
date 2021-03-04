@@ -58,6 +58,7 @@ passport.use(
 /* 토큰 형식 */
 const jwtStrategyOption = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+  // jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),
   secretOrKey: authConfig.secret,
 
     /* JWT 옵션 */

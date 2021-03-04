@@ -31,6 +31,7 @@
           보드, 리스트, 카드 모양 만들기 -->
 
           <div class="board">
+            <div id="board-id" style="display: none;">37</div>
             <div class="board-title">
               <h3>보드 제목</h3>
             </div>
@@ -237,13 +238,13 @@
                   </li>
                   <li class="card inactive">
                     <div class="text-container text">
-                      + 카드 등록
+                      <a class="add-list-btn ${this.id}">+ 리스트 등록</a>
                     </div>
                   </li>
                 </ul>
               </li>
-              <li class="list inactive">
-                <div class="text-container text">
+              <li class="list">
+                <div class="text-container text add-list">
                   + 리스트 등록
                 </div>
                 
@@ -259,11 +260,55 @@
   </section>
   <script src="https://kit.fontawesome.com/a18004eea6.js" crossorigin="anonymous"></script>
   <script type="text/javascript">
-    function logout() {
-      //token 삭제
-      window.localStorage.removeItem("token");
-      //홈페이지로
-      window.location.href = '../';
+    const boardId = document.querySelector('#board-id').innerText;
+    const addListBtn = document.querySelector('.add-list');
+    const lists = document.querySelectorAll('.list');
+    addListBtn.addEventListener("click", makeListInput);
+
+    function makeListInput() {
+      addListBtn.innerHTML = `<input type="text" name="list">
+                              <a class="list-ok-btn" onclick="addList(this)">OK</a>`;
+      addListBtn.removeEventListener("click", makeListInput);
+    }
+
+    function addList() {
+      const title = document.querySelector('input[name="list"]').value;
+      addlistevent = this;
+      // const index;
+      const index = lists.length;
+      const list = new List(boardId, title, index);
+      console.log(title, boardId, index);
+      console.log(list);
+      const url = "http://localhost:3000/boards/lists"
+      const createList = function(url, callback) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            const status = xhr.status;
+          if (status === 200) {
+            callback(null, xhr.response);
+          } else {
+            callback(status, xhr.response);
+          }
+        };
+        xhr.send();
+      };
+      createList(url, (err, message) => {
+          if(err) {
+              alert('Something went wrong: ' + err);
+          } else {
+              console.log(message);
+          }
+      });
+    }
+
+
+    function List(boardId, title, index) {
+      this.boardId = boardId;
+      this.title = title;
+      this.index = index;
     }
 
 
