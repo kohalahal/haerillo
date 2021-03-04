@@ -3,6 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mysql = require('mysql2/promise');
+
 const sequelize = require('./models/index');
 // const passport = require('passport');
 const { passport } = require('./config/passport.config');
@@ -26,16 +27,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
-//홈페이지 핸들링 옵션
-//1.홈페이지를 스태틱 페이지로
+app.use('/static', express.static('public'));
 app.use('/', express.static(__dirname + '/public'));
-//2.홈페이지를 페이지 라우터에서 핸들(/pages로 리다이렉트)
-// app.get('/', function(req, res) {
-//     res.redirect('/pages');
+app.get('/board', function(req, res, next) {
+    res.sendFile(path.join(__dirname, "./public", "board.html"));
+});
+// app.get('/board/:id', function(req, res, next) {
+//     res.sendFile(path.join(__dirname, "./public", "board.html"));
 // });
+app.get('/login', function(req, res, next) {
+    res.sendFile(path.join(__dirname, "./public", "login.html"));
+});
+app.get('/join', function(req, res, next) {
+    res.sendFile(path.join(__dirname, "./public", "join.html"));
+});
 
-//페이지 라우터
-app.use('/pages', pageRouter);
 //api 라우터
 app.use('/auth', authRouter);
 app.use('/boards', passport.authenticate('jwt', {session: false}), boardRouter);
