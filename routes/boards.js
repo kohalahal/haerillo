@@ -36,6 +36,7 @@ const boardService = require('../services/board.service');
  /* GET */
 /*  1.보드 목록 주기 */
 router.get('/', async (req, res) => {
+  console.log('겟보드 라우터');
   let userId = getUserIdFromToken(req);
   let boards = await boardService.getBoardList(userId);
   res.status(http.StatusCodes.OK).json(boards);
@@ -100,10 +101,14 @@ router.post('/lists', async (req, res) => {
 /*  3.카드 등록 */
 router.post('/lists/cards', async (req, res) => {
   let cardInput = {
-    listdId: req.body.list_id,
+    listId: req.body.list_id,
     content: req.body.content || '',
     index: req.body.index
   }
+  console.log('보드라우터');
+  console.log(req.body.list_id);
+  console.log(req.body.content);
+  console.log(req.body.index);
   let isCompleted = boardService.createCard(cardInput);
   if(isCompleted) {
     res.status(http.StatusCodes.CREATED).json({ message: '카드가 생성되었습니다.' });
