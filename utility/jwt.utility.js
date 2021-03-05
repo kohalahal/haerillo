@@ -7,7 +7,6 @@ const streamTokenArray = [];
 
     1.로그인 토큰
         1.1 생성(auth 서비스에서 사용)
-        1.2 디코드(보드 서비스에서 사용)
 
     2.스트림 토큰
         2.1 생성 (스트림 라우터에서 사용)
@@ -27,20 +26,6 @@ function generateLoginToken(id, username) {
     jwtConfig.secret, // 나만의 시크릿키
     { expiresIn: "15h" } // 토큰 만료 시간
     );
-}
-/* 1.2 디코드(보드 라우터에서 사용) */
-function getUserIdFromToken(req) {
-    if (req.headers && req.headers.authorization) {
-        let authorization = req.headers.authorization.split(' ')[1],
-            decoded;
-        try {
-            decoded = jwt.verify(authorization, jwtConfig.secret);
-            return decoded.id;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    return null;
 }
 
 /* 2. 스트림 토큰 */
@@ -85,5 +70,4 @@ function removeToken(token) {
 
 exports.generateLoginToken = generateLoginToken;
 exports.generateStreamToken = generateStreamToken;
-exports.getUserIdFromToken = getUserIdFromToken;
 exports.getBoardIdFromToken = getBoardIdFromToken;
