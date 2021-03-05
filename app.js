@@ -27,14 +27,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
+//static 프론트 파일
 app.use('/static', express.static('public'));
 app.use('/', express.static(__dirname + '/public'));
 app.get('/board', function(req, res, next) {
     res.sendFile(path.join(__dirname, "./public", "board.html"));
 });
-// app.get('/board/:id', function(req, res, next) {
-//     res.sendFile(path.join(__dirname, "./public", "board.html"));
-// });
 app.get('/login', function(req, res, next) {
     res.sendFile(path.join(__dirname, "./public", "login.html"));
 });
@@ -42,18 +40,10 @@ app.get('/join', function(req, res, next) {
     res.sendFile(path.join(__dirname, "./public", "join.html"));
 });
 
-//api 라우터
+//auth, stream, boards api 라우터
 app.use('/auth', authRouter);
 app.use('/stream', streamRouter);
-
+//보드 정보에는 로그인 회원만 접근 가능
 app.use('/boards', passport.authenticate('jwt', {session: false}), boardRouter);
-
-// app.get('/stream', (req, res) => {
-//     res.setHeader("Content-Type", "text/event-stream");
-//     setInterval(function() {
-//         console.log('interval');
-//         res.write('data: '+'news\n\n');
-//     }, 4000);
-// });
 
 module.exports = app;

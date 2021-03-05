@@ -32,8 +32,5 @@ module.exports = (sequelize, Sequelize) => {
     });
   };
 
-  // Board.associate = function(models) {
-
-  // };
   return Board;
 };
