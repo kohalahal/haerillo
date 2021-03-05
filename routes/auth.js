@@ -13,6 +13,7 @@ const authService = require('../services/auth.service');
   POST
     1.회원가입
     2.로그인
+    -TODO-
     3.토큰리프레쉬
 
   */
@@ -20,11 +21,13 @@ const authService = require('../services/auth.service');
 /* GET */
 /* 1.유저네임 중복체크 */
 router.get('/username/:username', async (req, res) => {
+  /* true: 사용할 수 있는 유저네임 */
   res.status(http.StatusCodes.OK).json({ message: await authService.checkUsername(req.params.username) });
 });
 
 /* 2.이메일 중복체크 */
 router.get('/email/:email', async (req, res) => {
+  /* true: 사용할 수 있는 이메일 */
   res.status(http.StatusCodes.OK).json({ message: await authService.checkEmail(req.params.email) });
 });
 
