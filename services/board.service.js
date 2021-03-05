@@ -5,24 +5,6 @@ const Card = require("../models").cards;
 
 const streamRouter = require("../routes/stream");
 
-async function sendEvents(boardId) {
-    let board = await Board.findOne({
-        where: {
-            id: boardId
-        },
-        include: [{
-            model: List,
-            required: false,            
-            include: [{
-                model: Card,
-                required: false                
-            }]
-        }]
-    });
-    streamRouter.sendEvents(boardId, board);
-}
-
-
 
 
 /* TODO :
@@ -35,8 +17,8 @@ async function sendEvents(boardId) {
     3.카드 등록
 
     Read
-    1.보드 목록 주기
-    2.보드 정보 주기
+    1.boards 주기
+    2.board 주기
       
     Update
     1.보드 수정
@@ -50,6 +32,11 @@ async function sendEvents(boardId) {
     3.카드 삭제
     4.보드 사용자 삭제
 
+    Utility
+    1.유저가 보드 소유자인지 확인
+    2.보드를 세부 정보 포함해서 찾기
+    3.변경 사항을 온라인 클라이언트에게 전송
+
   */
 
 
@@ -57,94 +44,53 @@ async function sendEvents(boardId) {
 
 /*  Create */
 /*  1.보드 생성 */
-async function createBoard(boardInput, userId) {
+async function createBoard(userId, boardInput) {
     /* 보드를 만들고, 쟉성자 유저와 연관관계 설정 */
     let board = await Board.create(boardInput);
-    let user = await User.findOne({ where: userId });
+    let user = await User.findByPk(userId);
     await user.addBoard(board);
-    console.log('new board');
-    return true;
- 
+    return true; 
 }
 /*  2.리스트 생성 */
-async function createList(listInput) {
-    let list = await List.create(listInput);
-    console.log('new list');
-    await sendEvents(listInput.boardId);
-    return true;
+async function createList(userId, listInput) {
+    /* 보드 소유자인지 확인 */
+    if(await userHasBoard(userId, listInput.boardId)) {
+        await List.create(listInput);
+        /* 클라이언트 갱신 */
+        await sendEventsToClients(listInput.boardId);
+        return true;
+    }
+    return false;
 }
 /*  3.카드 생성 */
-async function createCard(cardInput) {
-    console.log('cardInput'+cardInput);
-    console.log('cardInput'+cardInput.listId);
-    console.log('cardInput'+cardInput.content);
-    console.log('cardInput'+cardInput.index);
-    let card = await Card.create(cardInput);
-    console.log('new card');
-    await sendEvents(cardInput.boardId);
-    return true;
+async function createCard(userId, cardInput) {
+    /* 보드 소유자인지 확인 */
+    if(await userHasBoard(userId, cardInput.boardId)) {
+        await Card.create(cardInput);
+        console.log('new card');
+        /* 클라이언트 갱신 */
+        await sendEventsToClients(cardInput.boardId);
+        return true;
+    }
+    return false;    
 }
 
 /*  Read */
-/*  1.보드 목록 주기 */
+/*  1.boards 주기 */
 async function getBoardList(userId) {
     let user, boards;
-    user = await User.findOne({
-        where: {
-            id: userId
-          }
-    });
+    user =  await User.findByPk(userId);
     boards = await user.getBoards();
     return boards;
 }
-/*  2.보드 정보 주기 */
+/*  2.board 주기 */
 async function getBoard(userId, boardId) {
-    console.log('보드서비스 getBoard1');
-    let user, board;
-    user = await User.findOne({
-        where: {
-            id: userId
-        }
-    });
-    board = await Board.findOne({
-        where: {
-            id: boardId
-        },
-        include: [{
-            model: List,
-            required: false,            
-            include: [{
-                model: Card,
-                required: false                
-            }]
-        }]
-    });
-    console.log(board);
-    if(await user.hasBoard(board)) return board;
+    let board = userHasBoard(userId, boardId);
+    if(board) return board;
     return null;
 }
 
-async function getBoardStream(boardId) {
-    console.log('보드서비스 getBoard2');
-    console.log(boardId);
-    let board;
-   
-    board = await Board.findOne({
-        where: {
-            id: boardId
-        },
-        include: [{
-            model: List,
-            required: false,            
-            include: [{
-                model: Card,
-                required: false                
-            }]
-        }]
-    });
-    console.log(board);
-    return board;
-}
+
    
 /*  Update */
 /*  1.보드 수정 */
@@ -157,11 +103,38 @@ async function getBoardStream(boardId) {
 /*  3.카드 삭제 */
 
 
-
+/* Utility */
+/* 1.유저가 보드 소유자인지 확인 */
+async function userHasBoard(userId, boardId) {
+    let user = await User.findByPk(userId);
+    let board = await getFullBoard(boardId);
+    if(await user.hasBoard(board)) return board;
+    return null;
+}
+/* 2.보드를 세부 정보 포함해서 찾기 */
+async function getFullBoard(boardId) {
+    return await Board.findOne({
+        where: {
+            id: boardId
+        },
+        include: [{
+            model: List,
+            required: false,            
+            include: [{
+                model: Card,
+                required: false                
+            }]
+        }]
+    });
+}
+/* 3.변경 사항을 온라인 클라이언트에게 전송 */
+async function sendEventsToClients(boardId) {
+    let board = await getFullBoard(boardId);
+    streamRouter.sendEvents(boardId, board);
+}
 
 exports.createBoard = createBoard;
 exports.createList = createList;
 exports.createCard = createCard;
 exports.getBoardList = getBoardList;
 exports.getBoard = getBoard;
-exports.getBoardStream = getBoardStream;

@@ -1,19 +1,17 @@
 const passport = require('passport');
-const bcrypt = require('bcrypt');
 const passportJWT = require('passport-jwt');
+const jwtConfig = require('../config/jwt.config');
+const User = require('../models').users;
+const bcrypt = require('bcrypt');
 const ExtractJWT = passportJWT.ExtractJwt;
-
 const LocalStrategy = require('passport-local').Strategy;
 const JWTStrategy = passportJWT.Strategy;
 
-const User = require('../models').users;
-const authConfig = require('../config/auth.config');
 
 /* 목차
   1.로컬 스트레터지(인증 방식)
   2.JWT 스트레터지(JWT토큰)
 */
-
 
 /* 1.로컬 스트레터지 설정 */
 /* 사용 변수 */
@@ -22,34 +20,27 @@ const LocalStrategyOption = {
   passwordField: 'password',
 };
 
-/* AUTHENTICATE : 로그인 인증 방식 */
+/* AUTHENTICATE : 인증 방식 */
 passport.use(
-  'verify',
+  'login',
   new LocalStrategy(LocalStrategyOption, async (username, password, done) => {
     let user;
-    console.log('로그인1'+'username:'+username+'password'+password);
     try {
-      console.log('로그인2');
+      /* 유저네임 확인 */
       user = await User.findOne({ where: { username } });
-      if (!user) {
-        console.log('회원없음');
-        return done(null, false, { message: '잘못된 유저네임입니다.' });
+      if (!user) {        
+        return done(null, { message: '존재하지 않는 유저네임입니다.' });
       }
-      console.log('로그인3'+'username:'+user.username+" password:"+user.password);
+      /* 패스워드 일치 확인 */
       const isSamePassword = await bcrypt.compare(password, user.password);
       if (!isSamePassword) {
-        console.log('비번틀림');
-        return done(null, false, { message: '잘못된 패스워드입니다.' });
+        return done(null, { message: '패스워드가 일지하지 않습니다.' });
       }
-      console.log('로그인4');
-    } catch (error) {
-      console.log('로그인에러'+error);
-      done(error);
+    } catch (err) {
+      return done(null);
     }
-    console.log('로그인5');
-
     /* 로그인 성공 */
-    return done(null, user, { message: '로그인 성공' });
+    return done(user);
   }
 ));
 
@@ -58,10 +49,8 @@ passport.use(
 /* 토큰 형식 */
 const jwtStrategyOption = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  // jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),
-  secretOrKey: authConfig.secret,
-
-    /* JWT 옵션 */
+  secretOrKey: jwtConfig.secret,
+    /* 다른 JWT 옵션 */
   // issuer: 'enter issuer here',
   // audience: 'enter audience here',
   // algorithms: ['RS256'],
@@ -82,19 +71,17 @@ passport.use(
   new JWTStrategy(jwtStrategyOption, async (payload, done) => {
     let user;
     try {
-      // jwtPayload에 유저 정보가 담겨있다.
-      // 해당 정보로 유저 식별 로직을 거친다.
       user = await User.findOne({ where: payload.id });  
-      // 유효한 유저라면
+      /* 유효한 유저 */
       if (user) {
         done(null, user);
         return;
       }
-      // 유저가 유효하지 않다면
-      done(null, false, { message: 'inaccurate token.' });
-    } catch (error) {
-      console.error(error);
-      done(error);
+      /* 로그인 실패 */
+      done(null, false);
+    } catch (err) {
+      /* 에러 */
+      done(err, false);
     }    
   }
 ));

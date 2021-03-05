@@ -38,6 +38,7 @@ module.exports = (sequelize, Sequelize) => {
 
 
   //클래스 메소드
+
   //중복없는 이메일인지 체크
   User.isNewEmail = function(emailParam) {
     User.findOne({ where: {email: emailParam} }).then(function(user) {

@@ -1,57 +1,72 @@
 const express = require('express');
 const router = express.Router();
 const http = require('http-status-codes');
-const jwt = require("jsonwebtoken");
-const authConfig = require('../config/auth.config');
-const boardService = require('../services/board.service');
+const jwtUtility = require('../utility/jwt.utility');
 
-const boards = {};
+const onlineClients = {};
 
-function sendEvents(boardId, data) {
-    if(!boards[boardId]) {
-        boards[boardId] = [];
+/* 목차
+    SSE
+    1./stream/:token GET 리퀘스트 셋업
+    2.온라인 클라이언트에 이벤트로 보드 보내기(보드 서비스에서 사용)
+
+    Utility
+    1. 온라인 클라이언트 등록
+    2. 온라인 클라이언트 삭제 
+*/
+
+/* SSE */
+/* 1.GET 리퀘스트 셋업*/
+router.get('/:token', async (req, res) => {
+    let token = req.params.token;
+    let boardId = jwtUtility.getBoardIdFromToken(token);
+    /* 유효하지 않은 스트림 토큰 */
+    if(!boardId) {
+        console.log('stream 실패');
+        return res.status(http.StatusCodes.UNAUTHORIZED).json({ message: '권한이 없습니다.' });
     }
-    boards[boardId].forEach((board) => {
-        console.log("데이터보내기");
-        // board.res.write(`data: `+data+`\n\n`);
-        board.res.write(`data: ${JSON.stringify(data)} \n\n`);
+    /* 온라인 클라이언트에 res 등록 */
+    addToOnlineClients(boardId, token, res);    
+
+    /* SSE 리스폰스 설정 */
+    res.setHeader("Content-Type", "text/event-stream");
+    res.flushHeaders();
+    
+    /* 리퀘스트 끝났을 때 */
+    req.on("close", () => {
+        /* 온라인 클라이언트에서 삭제 */
+        removeOnlineClient(token);
+    });
+});
+
+/* 2.온라인 클라이언트에 이벤트로 보드 보내기(보드 서비스에서 사용) */
+function sendEvents(boardId, board) {
+    if(!onlineClients[boardId]) {
+        onlineClients[boardId] = [];
+    }
+    onlineClients[boardId].forEach((board) => {
+        board.res.write(`data: ${JSON.stringify(board)} \n\n`);
     });
 }
 
-router.get('/:boardId', async (req, res) => {
-    let boardId = req.params.boardId;
-    if(!boards[boardId]) {
-        console.log('배열 생성:'+boardId);
-        boards[boardId] = [];
+/* Utility */
+/* 1. 클라이언트 등록 */
+function addToOnlineClients(boardId, token, res) {
+    if(!onlineClients[boardId]) {
+        onlineClients[boardId] = [];
     }
-    boards[boardId].push({
-        id: boardId,
+    onlineClients[boardId].push({
+        token: token,
         res
     });
-    res.setHeader("Content-Type", "text/event-stream");
-    console.log('stream new boardId;'+boardId);
-    console.log('board 클라언트 length:'+boards[boardId].length);
-    if(!boardId) {      
-        res.status(http.StatusCodes.UNAUTHORIZED).json('보드에 권한이 없습니다.');
-    }
-    // let board = await boardService.getBoardStream(boardId);
-    // console.log('받은 보드:'+board);
-    // if(board) {
-    //   console.log('ㅇㅋ');
-    //   res.setHeader("Content-Type", "text/event-stream");
-    //   res.write(board+'\n\n');
-    //   // res.status(http.StatusCodes.OK).json(board);
-    // } else {
-    //   console.log('ㄴㄴ');
-    //   res.status(http.StatusCodes.UNAUTHORIZED).json('보드에 권한이 없습니다.');
-    // }
-    res.write('data: '+'ok\n\n');
-    req.on("close", () => {
-        console.log(`${boardId} Connection closed`);
-        boards[boardId] = boards[boardId].filter((board) => board.id !== boardId);
-    })
-  });
+}
 
+/* 2. 클라이언트 삭제 */
+function removeOnlineClient(token) {
+    onlineClients[boardId] = onlineClients[boardId].filter((board) => 
+    /* 토큰을 가진 요소 제외 */
+    board.token !== token);
+}
 
 module.exports = router;
 module.exports.sendEvents = sendEvents;
