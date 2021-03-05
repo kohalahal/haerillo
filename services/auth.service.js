@@ -16,7 +16,7 @@ async function checkUsername(username) {
     let user;
     try {
         user = await User.findOne({ where: { username } });
-        /* 유저네임으로 가입된 유저 발견 */
+        /* 유저네임으로 가입된 유저 발견 : 유저 네임 사용할 수 없음*/
         if(user) return false;
     } catch(error) {
         console.log(error);
@@ -29,7 +29,7 @@ async function checkEmail(email) {
     let user;
     try {
         user = await User.findOne({ where: { email } });
-        /* 이메일로 가입된 유저 발견 */
+        /* 이메일로 가입된 유저 발견 : 이메일 사용할 수 없음 */
         if(user) return false;
     } catch(error) {
         console.log(error);

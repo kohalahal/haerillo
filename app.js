@@ -3,9 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mysql = require('mysql2/promise');
-
 const sequelize = require('./models/index');
-// const passport = require('passport');
 const { passport } = require('./config/passport.config');
 
 const authRouter = require('./routes/auth');
@@ -14,12 +12,15 @@ const streamRouter = require('./routes/stream');
 
 const app = express();
 
-// sequelize.sequelize.sync({force: true, logging: false}).then(() => {
-//       console.log('db 초기화 완료');
-//     }).catch((err) => {
-//         console.error('db 초기화 실패');
-//         console.error(err);
-//     }).finally(() => sequelize.sequelize.close());
+/* sequelize.sequelize.sync({
+        force: true, 
+        logging: false
+    }).then(() => {
+      console.log('db 초기화 완료');
+    }).catch((err) => {
+        console.error('db 초기화 실패'+err);
+    }).finally(() => 
+    sequelize.sequelize.close()); */
 
 app.use(logger('dev'));
 app.use(express.json());
