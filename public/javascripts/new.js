@@ -1,17 +1,15 @@
-const url = "http://localhost:3000/boards/";
 
+const url = "http://localhost:3000/boards/";
 console.log("1");
 const boardId = getBoardId();
 let board;
 let sse;
-let ssedata;
 console.log(boardId);
-getBoard(boardId).then((data) => {
-    board = data;
-    document.querySelector('.board').innerHTML = Board(board);
-    addEvent();
-    console.log("2");
-
+getBoard(boardId).then((message) => {
+    console.log(message+' 겟보드 ㅇㅋ');
+})
+.catch((message) => {
+    console.log(message+' 겟보드 실패');
 });
 
 
@@ -59,31 +57,20 @@ function getBoardId() {
 
 function getBoard(boardId) {
     return new Promise(function (resolve, reject) {
-        let xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
+        
         xhr.open('GET', url+boardId);
         xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
         xhr.responseType = 'json';
         console.log("3");
-
         xhr.onload = function () {
             console.log("온로드");
-
             if (this.status >= 200 && this.status < 300) {
                 console.log(xhr.response);
                 console.log("4");
-
-                sse = new EventSource("http://localhost:3000/stream/"+boardId);
-                sse.onopen = function() {
-                    console.log("Connection to server opened.");
-                };
-                sse.onmessage = function(e) {
-                    console.log('sse!');
-                    console.log(e.data);
-                    ssedata=e.data;
-                    if(ssedata!='ok') document.querySelector('.board').innerHTML = Board(JSON.parse(ssedata));
-                }
+                render(xhr.response.board);
+                initSSE(xhr.response.streamToken);
                 console.log("5");
-
                 resolve(xhr.response);
             } else {
                 console.log("err");
@@ -94,7 +81,7 @@ function getBoard(boardId) {
             }
         };
         xhr.onerror = function () {
-            console.log("err");
+            console.log("err"+xhr.response.message);
 
             reject({
                 status: this.status,
@@ -108,8 +95,35 @@ function getBoard(boardId) {
 };
 
 
+function initSSE(token) {
+    console.log("token:"+token)
+    const url = "http://localhost:3000/stream/"+token;
+    console.log("url"+url);
+    sse = new EventSource(url);
 
+    sse.onopen = function() {
+        console.log("Connection to server opened.");
+    };
 
+    sse.onclose = function() {
+        console.log("SSE CLOSE");
+    }
+
+    sse.onerror = function() {
+        console.log('sse error');
+    }
+    
+    sse.onmessage = function(event) {
+        console.log('sse!');
+        console.log(event.data);
+        render(JSON.parse(event.data));
+    };    
+}
+
+function render(board) {
+    document.querySelector('.board').innerHTML = Board(board);
+    addEvent();
+}
 
 function addEvent() {
     const addListBtn = document.querySelector('.add-list');    
@@ -153,16 +167,18 @@ function addCard() {
     const card = { board_id: boardId, list_id: listId, content: content , index: index };
     console.log(listId, content, index);
     makeRequest("POST", url+"/lists/cards", card).then((data) => {
-        refresh();
+        refresh(data.message);
     });
 
 }
 
-function refresh() {
-    getBoard(boardId).then((data) => {
-        board = data;
-        document.querySelector('.board').innerHTML = Board(board);
-        addEvent();
+function refresh(message) {
+    sse.close();
+    getBoard(boardId).then(() => {
+        console.log('message'+'겟보드 ㅇㅋ');
+    })
+    .catch(() => {
+        console.log('message'+'겟보드 실패');
     });
 }
 
