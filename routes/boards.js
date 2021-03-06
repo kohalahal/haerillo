@@ -30,8 +30,10 @@ const boardService = require('../services/board.service');
 /* GET */
 /*  1.boards 주기 */
 router.get('/', async (req, res) => {
+  console.log("getboards");
   let userId = req.user.id;
   let boards = await boardService.getBoardList(userId);
+  console.log(boards);
   res.status(http.StatusCodes.OK).json({ boards, message: '보드 목록 가져오기 성공.' });
 });
 

@@ -19,24 +19,25 @@ const onlineClients = {};
 /* 1.GET 리퀘스트 셋업*/
 router.get('/:token', async (req, res) => {
     let token = req.params.token;
-    let boardId = jwtUtility.getBoardIdFromToken(token);
-    /* 유효하지 않은 스트림 토큰 */
-    if(!boardId) {
+    try {
+        let boardId = jwtUtility.getBoardIdFromToken(token);        
+        /* 온라인 클라이언트에 res 등록 */
+        addToOnlineClients(boardId, token, res);    
+
+        /* SSE 리스폰스 설정 */
+        res.setHeader("Content-Type", "text/event-stream");
+        res.flushHeaders();
+        
+        /* 리퀘스트 끝났을 때 */
+        req.on("close", () => {
+            /* 온라인 클라이언트에서 삭제 */
+            removeOnlineClient(boardId, token);
+        });
+    } catch (err) {
+        /* 유효하지 않은 스트림 토큰 */
         console.log('stream 실패');
         return res.status(http.StatusCodes.UNAUTHORIZED).json({ message: '권한이 없습니다.' });
     }
-    /* 온라인 클라이언트에 res 등록 */
-    addToOnlineClients(boardId, token, res);    
-
-    /* SSE 리스폰스 설정 */
-    res.setHeader("Content-Type", "text/event-stream");
-    res.flushHeaders();
-    
-    /* 리퀘스트 끝났을 때 */
-    req.on("close", () => {
-        /* 온라인 클라이언트에서 삭제 */
-        removeOnlineClient(token);
-    });
 });
 
 /* 2.온라인 클라이언트에 이벤트로 보드 보내기(보드 서비스에서 사용) */
@@ -44,8 +45,8 @@ function sendEvents(boardId, board) {
     if(!onlineClients[boardId]) {
         onlineClients[boardId] = [];
     }
-    onlineClients[boardId].forEach((board) => {
-        board.res.write(`data: ${JSON.stringify(board)} \n\n`);
+    onlineClients[boardId].forEach((client) => {
+        client.res.write(`data: ${JSON.stringify(board)} \n\n`);
     });
 }
 
@@ -62,9 +63,8 @@ function addToOnlineClients(boardId, token, res) {
 }
 
 /* 2. 클라이언트 삭제 */
-function removeOnlineClient(token) {
+function removeOnlineClient(boardId, token) {
     onlineClients[boardId] = onlineClients[boardId].filter((board) => 
-    /* 토큰을 가진 요소 제외 */
     board.token !== token);
 }
 
