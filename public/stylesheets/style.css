@@ -175,6 +175,9 @@ nav ul li a {
 
 /*  `GENERAL CONTENT`
 ------------------------------------------------------------------*/
+.btn {
+  cursor: pointer;
+}
 
 
 /*  `SPECIFIC PAGE`

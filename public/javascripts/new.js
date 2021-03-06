@@ -169,7 +169,6 @@ function addCard() {
     makeRequest("POST", url+"/lists/cards", card).then((data) => {
         refresh(data.message);
     });
-
 }
 
 function refresh(message) {
