@@ -1,54 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
-  <title>Welcome To Haerillo</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="http://localhost:3000/static/stylesheets/style.css">
+    <title></title>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <a href="/">Haerillo</a>
-    </div>
-    <nav>
-      <ul>
-        <li>
-          <a href="/pages/join">가입</a>
-        </li>
-        <li>
-          <a href="/pages/login">로그인</a>
-        </li>
-        <li>
-          <a href="#">로그아웃</a>
-        </li>
-      </ul>
-    </nav>
-
-  </header>
-  <section>
-      <div class="main-container">
-        <div class="index-content">
-          <div class="index-message left">
-            보드를 만들어 프로젝트를 관리하세요.
-            팀원을 초대해 협업하세요.
+    <header>
+        <div class="nav-container">
+          <div class="logo">
+            <a href="/" id="logo" data-link>Haerillo!</a>
           </div>
-          <div cass="index-boards right">
-            보드 목록
-          </div>
+          <nav class="nav">
+            <!-- header 렌더링-->
+          </nav>
+        <!-- end of nav-container -->
         </div>
-      <!-- end of main-container -->
+    </header>
+    <section>
+      <div class="app">
+        <!-- app 렌더링 -->
+      <!-- end of app -->
       </div>
   </section>
-  <script type="text/javascript">
-    /*     TODO
-    1.보드 목록 가져오기
-      1.1.로그인이면 보드 목록 보여주기, 로그아웃 메뉴 보여주기
-      1.2.로그인 아니라서 거절당하면 로그인,사인업 메뉴 보이기 */
-
-  </script>
-
-
+    <script type="module" src="http://localhost:3000/static/javascripts/view.js"></script>
+    <script type="text/javascript" src="http://localhost:3000/static/javascripts/index.js"></script>
 </body>
 </html>
