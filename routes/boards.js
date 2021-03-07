@@ -125,9 +125,10 @@ router.put('/:boardId', async (req, res) => {
 router.put('/lists/:listId', async (req, res) => {
   let userId = req.user.id;
   let listInput = {
-    id: req.params.listId,
+    boardId: req.body.board_id,
+    listId: req.params.listId,
     title: req.body.title || '',
-    boardId: req.body.board_id
+    index: req.body.index
   };
   let isCompleted = await boardService.updateList(userId, listInput);
   //리스트 수정 완료
@@ -142,9 +143,11 @@ router.put('/lists/:listId', async (req, res) => {
 router.put('/lists/cards/:cardId', async (req, res) => {
   let userId = req.user.id;
   let cardInput = {
-    id: req.params.cardId,
+    boardId: req.body.board_id,
+    listId: req.body.list_id,
+    cardId: req.params.cardId,
     content: req.body.content || '',
-    boardId: req.body.board_id
+    index: req.body.index
   };
   let isCompleted = await boardService.updateCard(userId, cardInput);
   //카드 수정 완료
@@ -187,8 +190,10 @@ router.delete('/lists/:listId', async (req, res) => {
 router.delete('/lists/cards/:cardId', async (req, res) => {
   let userId = req.user.id;
   let boardId = req.body.board_id;
+  let listId = req.body.list_id;
   let cardId = req.params.cardId;
-  let isCompleted = await boardService.removeCard(userId, boardId, cardId);
+  console.log(boardId);
+  let isCompleted = await boardService.removeCard(userId, boardId, listId, cardId);
   //보드 삭제 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '카드가 삭제되었습니다.' });

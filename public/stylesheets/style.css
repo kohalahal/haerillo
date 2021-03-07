@@ -172,14 +172,35 @@ nav ul li a {
   transform: translate(-50%, -50%);
 }
 
+#message {
+  display: none;
+  background-color: #dad3a8;
+  width: 500px;
+  height: 100px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  transition: all 1s;
+  opacity: 0;
+}
 
-/*  `GENERAL CONTENT`
-------------------------------------------------------------------*/
-.btn {
-  cursor: pointer;
+#message.visible {
+  display: block;
+  opacity: 1;
 }
 
 
+/*  `GENERAL CONTENT`
+------------------------------------------------------------------*/
+.pointer {
+  cursor: pointer;
+}
+.dragging {
+  opacity: .5;
+}
 /*  `SPECIFIC PAGE`
 ------------------------------------------------------------------*/
 /* 홈페이지 index */
@@ -250,19 +271,29 @@ nav ul li a {
   background-color: #f6faf7;
 }
 .card.inactive {
-  background-color: #d2dcd4;
+  background-color: #eef7f0;
 }
 .card.inactive .text {
   color: #796a6a;
 }
-.text-container {
+.text-container {  
   padding: 8px 6px;
+  text-align: justify;
+  word-break: keep-all;
+  word-wrap: break-word;
+}
+.list-title {
+  min-height: 2.2rem;
+}
+.card-content {
+  min-height: 1.8rem;
 }
 .input-container {
   width: 80%;
 }
 .text-container input {
-  width: 80%;
+  width: 98%;
+  height: 35px;
 }
 .text-container textarea {
   width: 98%;
@@ -273,6 +304,9 @@ nav ul li a {
 }
 .ok-btn-container {
   text-align: right;
+}
+.cancel-btn {
+  cursor: pointer;
 }
 .list .ok-btn {
   display: inline-block;
@@ -293,12 +327,10 @@ nav ul li a {
   background-color: #d3adade3;
 }
 .delete-btn {
-  /* display: none !important; */
+  display: none !important;
   position: absolute;
   right: 16px;
-  height: 31px;
-  width: 29.13px;
-  margin: 3px;
+  margin: 0.4rem;
   background-color: #dfe4e0e3;
   cursor: pointer;
   border-radius: 5px;
@@ -306,14 +338,13 @@ nav ul li a {
 }
 .fa-trash-alt {
   padding: 8px;
+  font-size: 0.8rem;
 }
 /* 텍스트컨테이너 호버시 삭제버튼 */
-.card.active:hover .delete-btn, .text-container:hover .delete-btn {
+.text-container:hover .delete-btn.hover, .card.active:hover .delete-btn.hover {
   display: block !important; 
 }
-.text {
-  cursor: pointer;
-}
+
 /* for flexbox */
 @supports(display: flex) {
   .list-container {

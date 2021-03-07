@@ -3,7 +3,7 @@ import abstractview from "./abstractview.js";
 export default class extends abstractview {
     constructor(params) {
         super(params);
-        this.setTitle("Haerillo 회원 로그인");
+        this.setTitle("Haerillo : 로그인");
     }
 
     Template() {
@@ -23,10 +23,15 @@ export default class extends abstractview {
                             <a onclick="login();" class="login-btn btn">로그인</a>                            
                         </form>
                         <div class="form-tail">
-                            비회원이시라면.. <a href="/join" data-link>Join</a>
+                            <div class="form-other">
+                                비회원이시라면.. <a href="/join" data-link>Join</a>
+                            </div>                         
+                            <div class="form-inform">
+                            </div>
                         </div>
                     <!-- end of form-container -->
                     </div>
+                    
                 <!-- end of center-container -->
                 </div>`;
     }
