@@ -4,28 +4,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="http://localhost:3000/static/stylesheets/style.css">
     <title></title>
 </head>
 <body>
-    <header>
-        <div class="nav-container">
-          <div class="logo">
-            <a href="/" id="logo" data-link>Haerillo!</a>
-          </div>
-          <nav class="nav">
-            <!-- header 렌더링-->
-          </nav>
-        <!-- end of nav-container -->
+  <div class="modal">
+    <div id="message">
+
+    </div>    
+  </div>
+  <header>
+      <div class="nav-container">
+        <div class="logo">
+          <a href="/" id="logo" data-link>Haerillo!</a>
         </div>
-    </header>
-    <section>
-      <div class="app">
-        <!-- app 렌더링 -->
-      <!-- end of app -->
+        <nav class="nav">
+          <!-- header 렌더링-->
+        </nav>
+      <!-- end of nav-container -->
       </div>
+  </header>
+  <section>
+    <div class="app">
+      <!-- app 렌더링 -->
+    <!-- end of app -->
+    </div>
   </section>
+    <script>
+      setTimeout(() => {
+
+
+
+      }, 1000);
+    </script>
+    <script src="https://kit.fontawesome.com/a18004eea6.js" crossorigin="anonymous"></script>
     <script type="module" src="http://localhost:3000/static/javascripts/view.js"></script>
-    <script type="text/javascript" src="http://localhost:3000/static/javascripts/index.js"></script>
+    <script type="module" src="http://localhost:3000/static/javascripts/views/modal.js"></script>
+    <script type="module" src="http://localhost:3000/static/javascripts/index.js"></script>
 </body>
 </html>

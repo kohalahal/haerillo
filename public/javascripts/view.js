@@ -26,14 +26,13 @@ const router = async () => {
     header.render();
 
     const routes = [
-        { path: "/spa", view: Index },
+        { path: "/", view: Index },
         { path: "/join", view: Join },
         { path: "/login", view: Login },
         { path: "/board", view: Boards },
         { path: "/board/:id", view: Board }
     ];
     const potentialMatches = routes.map(route => {
-        console.log("pathto:"+ location.pathname.match(pathToRegex(route.path)));
         return {
             route: route,
             result: location.pathname.match(pathToRegex(route.path))

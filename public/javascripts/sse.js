@@ -1,30 +1,31 @@
 import Board from "./views/board.js";
+import Modal from "./views/modal.js";
+
 
 export default class {
     constructor(token) {
         this.token = token;
         this.sse = new EventSource("http://localhost:3000/stream/"+token);
         this.init();
+        window.board = new Board();
+        window.modal = new Modal();
     }
 
     init = function() {
         this.sse.onopen = function() {
-            console.log("SSE Connection to server opened.");
         };
 
         this.sse.onclose = function() {
-            console.log("SSE CLOSE");
         }
     
         this.sse.onerror = function() {
-            console.log('SSE error');
+            window.modal.login();
         }
         
         this.sse.onmessage = function(event) {
-            console.log('new sse!');
-            // console.log(event.data);    
-            console.log(JSON.parse(event.data));          
-            document.querySelector(".app").innerHTML = new Board().Template(JSON.parse(event.data));
+            const board = new Board();
+            document.querySelector(".app").innerHTML = window.board.Template(JSON.parse(event.data));
+            window.board.addEvent();
         };
     };
 
