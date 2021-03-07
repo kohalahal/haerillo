@@ -7,7 +7,6 @@ export default class extends abstractview {
     }
     
     async render() {
-        console.log("boards render");
         try {
             const data = await this.getData();
             if(data) {

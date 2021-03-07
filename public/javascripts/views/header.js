@@ -6,15 +6,9 @@ export default class extends abstractview {
     }
 
     async render() {
-        console.log("header render");
         try {
-            console.log("헤더1");
             const data = await this.getData();
-            console.log("헤더2");
-            console.log(data);
-
             if(data) {
-                console.log('로그인');
                 document.querySelector("nav.nav").innerHTML = this.Template("회원님");
             } else {
                 document.querySelector("nav.nav").innerHTML = this.Template();
@@ -35,7 +29,6 @@ export default class extends abstractview {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    console.log("로그인");
                     return resolve(this.status);
                 } else {                    
                     window.localStorage.removeItem("token");
@@ -69,7 +62,7 @@ export default class extends abstractview {
                         <a href="/board" data-link>보드</a>
                     </li>
                     <li>
-                        <a href="/logout" onclick="logout()">로그아웃</a>
+                        <a onclick="logout()">로그아웃</a>
                     </li>
                 </ul>`;
     }

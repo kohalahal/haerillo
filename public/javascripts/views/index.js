@@ -10,7 +10,7 @@ export default class extends abstractview {
         document.querySelector(".app").innerHTML = this.Template();
     }
 
-    Template(data) {
+    Template() {
         return `<div class="index-content">
                     <div class="index-message left">
                         보드를 만들어 프로젝트를 관리하세요.

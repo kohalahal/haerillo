@@ -43,7 +43,9 @@ function generateStreamToken(boardId) {
 }
 /* 2.2 토큰 재사용 막으면서 디코드하기 (스트림 라우터에서 사용)*/
 function getBoardIdFromToken(token) {
-    if(!verifyStreamToken) return null;
+    if(!verifyStreamToken) {
+        throw new Error();
+    }
     let decoded;
     try {
         decoded = jwt.verify(token, jwtConfig.streamSecret);
