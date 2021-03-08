@@ -1,21 +1,25 @@
 import abstractview from "./abstractview.js";
 
 export default class extends abstractview {
-    constructor(params) {
-        super(params);
+    constructor(params, modal) {
+        super(params, modal);
     }
 
-    async render() {
+    async init() {
         try {
             const data = await this.getData();
             if(data) {
-                document.querySelector("nav.nav").innerHTML = this.Template("회원님");
-            } else {
-                document.querySelector("nav.nav").innerHTML = this.Template();
-            }
+                this.render("회원님");
+                return;
+            } 
         } catch(err) {
-            document.querySelector("nav.nav").innerHTML = this.Template();
+
         }
+        this.render();
+    }
+
+    render(data) {
+        document.querySelector("nav.nav").innerHTML = this.Template(data);
     }
 
     getData() {
@@ -29,17 +33,22 @@ export default class extends abstractview {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    return resolve(this.status);
-                } else {                    
+                    return resolve(xhr.response);
+                } else {     
                     window.localStorage.removeItem("token");
-                    return reject();
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
                 }                
             };
             xhr.onerror = function () {  
-                return reject();
+                reject({
+                    status: this.status,
+                    statusText: xhr.statusText
+                });
             };
             xhr.send();
-
         });
     }
 
@@ -56,13 +65,13 @@ export default class extends abstractview {
         }
         return ` <ul>
                     <li>
-                        ${data}, 어서오세요
+                        ${data}, 어서오세요!
                     </li>
                     <li>
                         <a href="/board" data-link>보드</a>
                     </li>
                     <li>
-                        <a onclick="logout()">로그아웃</a>
+                        <a class="pointer" onclick="logout()">로그아웃</a>
                     </li>
                 </ul>`;
     }

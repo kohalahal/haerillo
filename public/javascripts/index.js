@@ -1,10 +1,11 @@
 import Modal from "./views/modal.js";
 
 const modal = new Modal();
+
 window.join = join;
 window.login = login;
 window.logout = logout;
-
+window.createBoard = createBoard;
 
 function goToIndex() {
     document.querySelector("#logo").click();
@@ -31,7 +32,7 @@ function join() {
         email,
         password
     };
-    post("join", data).then((res) => {
+    post("auth/join", data, false).then((res) => {
         modal.simple(res.message);
         goToIndex();
     }).catch((res) => {
@@ -54,9 +55,8 @@ function login() {
         username,
         password
     };
-    post("login", data).then((res) => {
+    post("auth/login", data, false).then((res) => {
         window.localStorage.setItem("token", res.token);
-        modal.simple("로그인 성공");
         goToIndex();
     }).catch((res) => {
         modal.simple(res.message);
@@ -69,11 +69,25 @@ function logout() {
     goToIndex();
 }
 
-function post(path, data) {
+function createBoard() {
+    post("boards", null, true).then((data) => {
+        window.location = "http://localhost:3000/board/"+data.boardId;
+    }).catch(() => {
+        modal.alertTryAgain();
+    });
+}
+
+function post(path, data, needAuthentication) {
     return new Promise(function (resolve, reject) {
-        const url = "http://localhost:3000/auth/"+path;
-        const xhr = new XMLHttpRequest();        
+        const url = "http://localhost:3000/"+path;
+        const xhr = new XMLHttpRequest();
+        let input = JSON.stringify(data);
         xhr.open('POST', url);
+        if(needAuthentication) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
+            input = undefined;
+        }
+        JSON.stringify(data)
         xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) {
                 resolve(xhr.response);
@@ -86,6 +100,6 @@ function post(path, data) {
         };
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.responseType = 'json';
-        xhr.send(JSON.stringify(data));
+        xhr.send(input);
     });
 }

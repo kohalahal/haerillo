@@ -52,10 +52,10 @@ async function createBoard(userId, boardInput) {
         let board = await Board.create(boardInput);
         let user = await User.findByPk(userId);
         await user.addBoard(board);
-        return true; 
+        return board; 
     } catch {
     }
-    return false;
+    return null;
 }
 /*  2.리스트 생성 */
 async function createList(userId, listInput) {
@@ -92,6 +92,7 @@ async function createCard(userId, cardInput) {
 async function getBoardList(userId) {
     let user, boards;
     try {
+        
         user =  await User.findByPk(userId);
         boards = await user.getBoards();
     } catch {   
@@ -125,17 +126,16 @@ async function updateBoard(userId, boardInput) {
     return false;
 }
 /*  2.리스트 수정 */
-async function updateList(userId, listInput) {
+async function updateList(userId,  boardId, listId, listInput) {
     /* 유저가 소유한 보드인지 확인 */
-    if(await userHasBoard(userId, listInput.boardId)) {
+    if(await userHasBoard(userId, boardId)) {
         try {
-            await List.update({
-                title: listInput.title,
-                index: listInput.index
-            }, {
-                where: { id: listInput.listId } 
+            await List.update(
+                listInput, 
+                {
+                where: { id: listId } 
             });
-            await sendEventsToClients(listInput.boardId);
+            await sendEventsToClients(boardId);
             return true;
         } catch {
         }
@@ -143,19 +143,17 @@ async function updateList(userId, listInput) {
     return false;
 }
 /*  3.카드 수정 */
-async function updateCard(userId, cardInput) {
+async function updateCard(userId, boardId, cardId, cardInput) {
     /* 유저가 소유한 보드인지 확인 */
-    const board = await userHasBoard(userId, cardInput.boardId);
+    const board = await userHasBoard(userId, boardId);
     if(board) {
         try {
-            await Card.update({
-                listId: cardInput.listId,
-                content: cardInput.content,
-                index: cardInput.index
-            }, {
-                where: { id: cardInput.cardId } 
+            await Card.update(
+                cardInput, 
+                {
+                where: { id: cardId } 
             });
-            await sendEventsToClients(cardInput.boardId);
+            await sendEventsToClients(boardId);
             return true;
         } catch {                    
         }
@@ -180,7 +178,6 @@ async function removeBoard(userId, boardId) {
 }
 /*  2.리스트 삭제 */
 async function removeList(userId, boardId, listId) {
-    console.log("ㅎㅇ"+userId+" "+boardId+" "+listId);
     /* 유저가 소유한 보드인지 확인 */
     const board = await userHasBoard(userId, boardId);
     if(board) {
@@ -235,7 +232,6 @@ async function userHasBoard(userId, boardId) {
 }
 /* 2.보드를 세부 정보 포함해서 찾기 */
 async function getFullBoard(boardId) {
-    console.log("bid"+boardId);
     try {
         return await Board.findOne({
             where: {

@@ -34,7 +34,7 @@ passport.use(
       /* 패스워드 일치 확인 */
       const isSamePassword = await bcrypt.compare(password, user.password);
       if (!isSamePassword) {
-        return done(null, { message: '패스워드가 일지하지 않습니다.' });
+        return done(null, { message: '패스워드가 일치하지 않습니다.' });
       }
     } catch (err) {
       return done(null);
@@ -50,6 +50,7 @@ passport.use(
 const jwtStrategyOption = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
   secretOrKey: jwtConfig.secret,
+  // passReqToCallback: true
     /* 다른 JWT 옵션 */
   // issuer: 'enter issuer here',
   // audience: 'enter audience here',

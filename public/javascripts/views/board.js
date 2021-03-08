@@ -1,22 +1,23 @@
 import abstractview from "./abstractview.js";
-import Modal from "./modal.js";
-import SSE from "../sse.js";
-// import Drag from "../drag.js";
+import SSE from "../sse.js"
+
 
 export default class extends abstractview {
-    constructor(params) {
-        super(params);
+    constructor(params, modal) {
+        super(params, modal);
+        this.sse;
 
-        this.boardTitle = "";
-        this.listTitle = "";
-        this.cardContent = "";
+        this.boardTitleValue = "";
+        this.listTitleValue = "";
+        this.cardContentValue = "";
         
         this.activeListEditor = null;
         this.activeListInput = null;
         this.activeCardEdior = null;
         this.activeCardInput = null;
-        window.modal = new Modal();
-        
+
+        this.listIdBeforeCardDrag = null;
+        this.indexBeforeCardDrag = null;        
     }
 
     editBoardEventAction = this.makeBoardEditor.bind(this);
@@ -39,33 +40,45 @@ export default class extends abstractview {
     updateBoard = this.updateBoardRequest.bind(this);
     updateList = this.updateListRequest.bind(this);
     updateCard = this.updateCardRequest.bind(this);
-    moveCard = this.moveCardRequest.bind(this);
-
+    
     deleteList = this.deleteListRequest.bind(this);
     deleteCard = this.deleteCardRequest.bind(this);
+    
+    memorizeCard = this.memorizeCardDrag.bind(this);
+    compareCard = this.compareCardDrag.bind(this);
+    moveCard = this.moveCardRequest.bind(this);
 
-    async render() {
+    bindEventListener = this.addEvent.bind(this);
+
+    async init() {
         try {
             const data = await this.getData(this.params.id);
             if(data) {
-                document.querySelector(".app").innerHTML = this.Template(data.board);
-                this.setTitle("Haerillo : "+data.board.title);
-                this.addEvent();
-                window.sse = new SSE(data.streamToken);
+                this.render(data.board);
+                if(!this.sse) this.sse = new SSE(data.streamToken, this, this.modal);
+                return;
             } else {
-                window.modal.login();
-                console.log("에러"+err);
+                this.modal.forbidden();
+                return;
             }
         } catch(err) {
-            window.modal.forbidden();
-            console.log("에러"+err);
+            console.log(err);
         }
+        this.modal.forbidden();
+        return;
+    }
+
+    render(board) {
+        document.querySelector("body").classList.add("color");
+        document.querySelector(".app").innerHTML = this.Template(board);
+        this.setTitle("Haerillo : " + board.title);
+        this.bindEventListener();
     }
 
     getData(id) {
         return new Promise(function (resolve, reject) {
             if(!window.localStorage.getItem("token")) {
-                window.modal.login;
+                this.modal.login();
                 return reject();
             }
             const xhr = new XMLHttpRequest();
@@ -75,15 +88,18 @@ export default class extends abstractview {
             xhr.responseType = 'json';
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    // console.log(xhr.response);
                     resolve(xhr.response);
                 } else {
-                    reject();
-                }
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });                }
             };
             xhr.onerror = function () {  
-                reject();
-            };
+                reject({
+                    status: this.status,
+                    statusText: xhr.statusText
+                });            };
             xhr.send();
         });
     }
@@ -109,17 +125,17 @@ export default class extends abstractview {
         document.querySelectorAll('.card.active').forEach(card => {
             card.addEventListener('dragstart', () => {
                 card.classList.add('dragging');
+                this.memorizeCard(card);
             });
             card.addEventListener('dragend', () => {
                 card.classList.remove('dragging');
-                this.moveCard(card);
+                this.compareCard(card);
             });
         });
         document.querySelectorAll('.card-container').forEach(list => {
             list.addEventListener('dragover', e => {
                 e.preventDefault();
                 const afterElement = this.getDragAfterElement(list, e.clientY);
-                // console.log(afterElement);
                 const card = document.querySelector('.dragging');
                 if (afterElement == null) {
                     list.appendChild(card);
@@ -155,7 +171,7 @@ export default class extends abstractview {
         board.innerText = "";
         board.appendChild(input);     
         board.appendChild(div);     
-        this.boardTitle = text;
+        this.boardTitleValue = text;
     }
     makeListEditor(event) {
         if(event) event.stopPropagation();
@@ -189,7 +205,7 @@ export default class extends abstractview {
         list.appendChild(input);     
         list.appendChild(div); 
         this.activeListEdior = input;
-        this.listTitle = text;
+        this.listTitleValue = text;
     }
     makeCardEditor(event) {
         if(event) event.stopPropagation();
@@ -225,24 +241,28 @@ export default class extends abstractview {
     removeBoardEditor(event) {
         if(event) event.stopPropagation();
         const board = event.target.closest(".board-title");
-        board.classList.add("pointer");
+        board.classList.add("shadow");
+        board.classList.add("border");
         const title = document.createElement("h3");
-        title.innerText = this.boardTitle;
-        board.innerHTML = "";
+        title.classList.add("pointer");
+        title.innerText = this.boardTitleValue;
+        board.innerText = "";
         board.appendChild(title);
         board.addEventListener("click", this.editBoardEventAction);
     }
     removeListEditor(event) {
         if(event) event.stopPropagation();
         const list = this.activeListEdior.closest(".list-title");
-        list.classList.add("pointer");
+        list.classList.add("shadow");
+        list.classList.add("border");
         const title = document.createElement("h4");
-        title.innerText = this.listTitle;
+        title.innerText = this.listTitleValue;
         list.innerHTML = "";
         list.appendChild(title);
         list.addEventListener("click", this.editListEventAction);
         list.closest(".text-container").querySelector(".delete-btn").classList.add("hover");
         this.activeListEdior = null;
+        this.listTitleValue = "";
     }
     removeCardEditor(event) {        
         if(event) event.stopPropagation();
@@ -253,8 +273,11 @@ export default class extends abstractview {
         card.addEventListener("click", this.editCardEventAction);
         card.closest(".card").querySelector(".delete-btn").classList.add("hover");
         this.activeCardEdior = null;
+        this.cardContent = "";
     }
     makeListInput(event) {
+        console.log(this.params.id);
+
         if(event) event.stopPropagation();
         if(this.activeListEdior) {
             this.cancelEditListEventAction();
@@ -329,95 +352,149 @@ export default class extends abstractview {
     }
 
     updateBoardRequest(event) {
-        const boardId = document.querySelector("#board-id").innerText;
+        const boardId = this.params.id;
         const title = document.querySelector(".board-title").querySelector('input').value;
         const boardInput = { title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/"+boardId, boardInput).then((data) => {
-            window.modal.simple("보드가 수정되었습니다.");
+            this.modal.simple("보드가 수정되었습니다.");
         });
     }
     updateListRequest(event) {
+        const boardId = this.params.id;
         const list = event.target.closest('.list');
-        const boardId = document.querySelector("#board-id").innerText;
         const listId = list.firstElementChild.innerText;
         const title = list.querySelector('input').value;
-        let index;
-        document.querySelectorAll('.list').forEach((element, i) => {
-            if(element == list) index = i;
-        });
-        const listInput = { board_id: boardId, title: title, index: index };
+        const listInput = { board_id: boardId, title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/"+listId, listInput).then((data) => {
-            window.modal.simple("리스트가 수정되었습니다.");
+            this.modal.simple("리스트가 수정되었습니다.");
         });
     }
     updateCardRequest(event) {
+        const boardId = this.params.id;
         const card = event.target.closest(".card");
         const list = event.target.closest('.list');
-        const boardId = document.querySelector("#board-id").innerText;
         const listId = list.firstElementChild.innerText;
         const cardId = card.querySelector(".card-id").innerText;
-        let content = list.querySelector('textarea')?.value;
-        let index;
-        list.querySelectorAll('.card').forEach((element, i) => {
-            if(element == card) index = i;
-        });
-        const cardInput = { board_id: boardId, list_id: listId, content: content , index: index };
+        const content = list.querySelector('textarea').value;
+        const cardInput = { board_id: boardId, list_id: listId, content: content };
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/cards/"+cardId, cardInput).then((data) => {
-            window.modal.simple("카드가 수정되었습니다.");
+            this.modal.simple("카드가 수정되었습니다.");
         });
     }
-    moveCardRequest(card) {
-        const list = card.closest('.list');
-        const boardId = document.querySelector("#board-id").innerText;
+    memorizeCardDrag(card) {
+        const list = card.closest(".list");
+        this.listIdBeforeCardDrag = list.firstElementChild.innerText;
+        list.querySelectorAll('.card').forEach((element, i) => {
+            if(element == card) {
+                this.indexBeforeCardDrag = i;
+                return;
+            }
+        });
+    }
+    compareCardDrag(card) {
+        const list = card.closest(".list");
         const listId = list.firstElementChild.innerText;
-        const cardId = card.querySelector(".card-id").innerText;
-        let content = card.innerText;
         let index;
         list.querySelectorAll('.card').forEach((element, i) => {
-            if(element == card) index = i;
+            if(element == card) {
+                index = i;
+                return;
+            }
         });
-        console.log(index);
-        const cardInput = { board_id: boardId, list_id: listId, content: content , index: index };
+        if(this.listIdBeforeCardDrag == listId && this.indexBeforeCardDrag == index) return;
+        this.sse.pause();
+        if(this.cardBeforeDragListId != listId) {
+            const cardsInListNow = Array.from(list.querySelectorAll(".card.active"));
+            const cardsMovingBackward = cardsInListNow.filter((i) => 
+                i >= index
+            );
+            if(cardsMovingBackward.length>0) cardsMovingBackward.forEach((card, i) => {                
+                this.moveCardRequest(i==0?listId:null, card.firstElementChild.innerText, index + i );
+            });
+            const listBefore = document.querySelector(".list.id-"+this.listIdBeforeCardDrag);
+            const cardsInListBefore = Array.from(listBefore.querySelectorAll(".card.active"));
+            const cardsMovingForward = cardsInListBefore.filter((i) => 
+                i > this.indexBeforeCardDrag
+            );
+            if(cardsMovingForward.length>0) cardsMovingForward.forEach((card, i) => {
+                this.moveCardRequest(null, card.firstElementChild.innerText, this.indexBeforeCardDrag + i );
+            });
+            return;
+        } 
+        const bigger = index < this.indexBeforeCardDrag? this.indexBeforeCardDrag : index;
+        const smaller = index < this.indexBeforeCardDrag? index : this.indexBeforeCardDrag;
+        const cardsInList = Array.from(list.querySelectorAll(".card.active"));
+        const cardsMoving = cardsInList.filter((i) => 
+            i <= bigger && i >= smaller 
+        );
+        if(cardsMoving.length>0) cardsMoving.forEach((card, i) => {
+            this.moveCardRequest(null, card.firstElementChild.innerText, smaller + i);
+        });   
+    }
+    moveCardRequest(listId, cardId, index) {
+        const boardId = this.params.id;
+        const cardInput = { board_id: boardId };
+        if(listId) cardInput.list_id = listId;
+        cardInput.index = index;
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/cards/"+cardId, cardInput).then((data) => {
-            
-            window.modal.simple(data.message);
         });
     }
     createListRequest(event) {
-        const boardId = document.querySelector("#board-id").innerText;
+        this.activeListInput = null;
+        const boardId = this.params.id;
         const title = event.target.closest('.list').querySelector('input').value;
         const index = document.querySelectorAll('.list').length - 1;
         const list = { board_id: boardId, title: title, index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists", list).then((data) => {
-            window.modal.simple("리스트가 등록되었습니다.");
+            this.modal.simple("리스트가 등록되었습니다.");
         });
     }
     createCardRequest(event) {
+        this.activeCardInput = null;
+        const boardId = this.params.id;
         const list = event.target.closest('.list');
-        const boardId = document.querySelector("#board-id").innerText;
         const listId = list.firstElementChild.innerText;
         const content = list.querySelector('textarea').value;
         const index = list.querySelectorAll('.card').length - 1;
         const card = { board_id: boardId, list_id: listId, content: content , index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists/cards", card).then((data) => {
-            window.modal.simple("카드가 등록되었습니다.");
+            this.modal.simple("카드가 등록되었습니다.");
         });
     }
     deleteListRequest(event) {
-        const boardId = document.querySelector("#board-id").innerText;
+        if(!confirm("리스트를 정말로 삭제하시겠습니까?")) return;
+        const boardId = this.params.id;
         const listId = event.target.closest('.list').firstElementChild.innerText;
         const data = { board_id: boardId };
         this.makeRequest("DELETE", "http://localhost:3000/boards/lists/"+listId, data).then((data) => {
-            window.modal.simple("리스트가 삭제되었습니다.");
+            this.modal.simple("리스트가 삭제되었습니다.");
         });
     }
     deleteCardRequest(event) {
-        const boardId = document.querySelector("#board-id").innerText;
-        const listId = event.target.closest('.list').firstElementChild.innerText;
-        const cardId = event.target.closest(".card").querySelector(".card-id").innerText;
+        const boardId = this.params.id;
+        const list = event.target.closest('.list');
+        const listId = list.firstElementChild.innerText;
+        const card = event.target.closest(".card.active");
+        const cardId = card.querySelector(".card-id").innerText;
+        const cardsInList = list.querySelectorAll('.card');
+        let index;
+        cardsInList.forEach((element, i) => {
+            if(element == card) {
+                index = i;
+                return;
+            }
+        });
+        if(index+1 < cardsInList.length) {
+            const array = Array.from(cardsInList);
+            array.filter((i) => 
+                i > index
+            ).forEach((card, i) => {
+                this.moveCardRequest(null, card.firstElementChild.innerText, index + i );
+            });
+        }
         const data = { board_id: boardId, list_id: listId };
         this.makeRequest("DELETE", "http://localhost:3000/boards/lists/cards/"+cardId, data).then((data) => {
-            window.modal.simple("카드가 삭제되었습니다.");
+            this.modal.simple("카드가 삭제되었습니다.");
         });
     }
 
@@ -450,7 +527,6 @@ export default class extends abstractview {
 
     getDragAfterElement(list, y) {
         const draggableElements = [...list.querySelectorAll('.card:not(.dragging)')];
-
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
@@ -464,12 +540,12 @@ export default class extends abstractview {
 
     Template(board) {
         return `<div id="board-id" style="display: none;">${board.id}</div>
-                <div class="board-title pointer">
-                    <h3>${board.title}</h3>
+                <div class="board-title shadow">
+                    <h3 class="pointer">${board.title}</h3>
                 </div>
                 <ul class="list-container">
                     ${board.lists.reduce((acc, list) => acc += this.List(list), '')}
-                    <li class="list inactive">
+                    <li class="list inactive shadow">
                         <div class="text-container pointer add-list">
                             + 리스트 등록
                         </div>                    
@@ -479,7 +555,7 @@ export default class extends abstractview {
     }
     
     List ({id, title, cards}) {
-        return `<li class="list ${id}">
+        return `<li class="list id-${id} shadow border" draggable="true">
                     <div class="list-id" style="display: none;">${id}</div>
 
                     <div class="text-container">
@@ -492,8 +568,8 @@ export default class extends abstractview {
                     </div>
                     <ul class="card-container">
                         ${cards.reduce((acc, card) => acc += this.Card(card), '')}                
-                        <li class="card inactive">
-                            <div class="text-container pointer add-card">
+                        <li class="card inactive shadow">
+                            <div class="text-container pointer add-card shadow">
                                 + 카드 등록
                             </div>
                         </li>
@@ -502,8 +578,8 @@ export default class extends abstractview {
                 </li>`;
     }
     
-    Card ({id, content}) {
-        return `<li class="card active" draggable="true">
+    Card ({id, content, index}) {
+        return `<li class="card active shadow border" draggable="true">
                     <div class="card-id" style="display: none;">${id}</div>
                     <div class="delete-btn hover card-delete">
                         <i class="fas fa-trash-alt"></i>
