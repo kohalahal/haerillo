@@ -1,24 +1,24 @@
 import abstractview from "./abstractview.js";
 
 export default class extends abstractview {
-    constructor(params) {
-        super(params);
-        this.setTitle("Haerillo: 보드 리스트");
+    constructor(params, modal) {
+        super(params, modal);
+        this.setTitle("Haerillo: 보드 리스트");        
     }
-    
-    async render() {
+
+    Board = this.boardTemplate.bind(this);
+
+    async init() {
         try {
             const data = await this.getData();
             if(data) {
-                console.log(data);
-                document.querySelector(".app").innerHTML = this.Template(data);
-            } else {
-                // document.querySelector(".app").innerHTML = this.Template();
-            }
+                this.render(data);
+                return;
+            } 
         } catch(err) {
-            console.log("에러"+err);
-            // document.querySelector(".app").innerHTML = this.Template();
+            console.log(err);
         }
+        window.modal.alertLogin();
     }
 
     getData() {
@@ -50,21 +50,55 @@ export default class extends abstractview {
     }
 
     Template(data) {
-        return `<ul class="boards">
-                    ${data.boards.reduce((acc, board) => acc += this.Board(board), '')}
-                </ul>`;
-    }
+        return `<div class="boards">
+                    <ul>
+                        <li class="board add-board pointer" onclick="createBoard();">
+                            <div class="board-small">
+                                <div class="board-small-title">
+                                    <h3>
+                                        <i class="fas fa-folder-plus"></i>
+                                        새로운 보드
+                                    </h3>
+                                </div>
 
-    Board(board) {
-        return `<li class="board-list">
-                    <div class="board-small">
-                        <div class="board-small-title">
-                            <a href="/board/${board.id}" data-link>제목: ${board.title}</a>
+                            </div>
+                        </li>
+                        ${data.boards.reduce((acc, board) => acc += this.Board(board), '')}
+                    </ul>
+                </div>`;
+    }
+    boardTemplate(board) {
+        return `<a href="/board/${board.id}" data-link>
+                    <li class="board shadow border">
+                        <div class="board-small">
+                            <div class="board-small-title">
+                                <h3>
+                                    ${this.cutLongText(board.title)}
+                                </h3>
+                            </div>
+                            <div class="board-small-date">
+                                created at ${this.dateFormat(board.createdAt)}
+                            </div>
+                            <div class="board-small-date">
+                                updated at ${this.dateFormat(board.updatedAt)}
+                            </div>
                         </div>
-                        <div class="board-small-date">
-                            마지막 수정: ${board.updatedAt}
-                        </div>
-                    </div>
-                </li>`;
+                    </li>
+                </a>`;
+    }
+    cutLongText(data) {
+        if(data.length>20) {
+            return data.slice(0, 20)+"...";
+        }
+        return data;
+    }
+    dateFormat(data) {
+        const date = new Date(data);
+        const year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        month = month < 10 ? "0"+month : month;
+        let day = date.getDate();
+        day = day < 10 ? "0"+day : day;
+        return year+"."+month+"."+day;
     }
 }
