@@ -79,7 +79,10 @@ router.post('/login', async (req, res, next) => {
 
 
 /* 3.토큰 유효성 확인 */
-router.get('/verify', passport.authenticate('jwt', {session: false}));
+router.get('/verify', passport.authenticate('jwt', {session: false}), (req, res) => {
+  res.json({ username: req.user.username });
+  console.log("dd");
+});
 
  
 module.exports = router;

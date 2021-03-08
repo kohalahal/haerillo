@@ -1,18 +1,22 @@
 export default class {
-    constructor(params) {
+    constructor(params, modal) {
         this.params = params;
+        this.modal = modal;
     }
     
     setTitle(title) {
         document.title = title;
     }
 
-    getData() {
-        return new Promise();
+    async init() {
+        this.render(this.getData());
     }
 
-    render() {
-        document.querySelector(".app").innerHTML = this.Template();
+    getData() {
+    }
+
+    render(data) {
+        document.querySelector(".app").innerHTML = this.Template(data);
     }
 
     Template(data) {

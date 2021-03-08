@@ -1,16 +1,14 @@
 import abstractview from "./abstractview.js";
 
 export default class extends abstractview {
-    constructor(params) {
-        super(params);
+    constructor(params, modal) {
+        super(params, modal);
         this.setTitle("Haerillo : 로그인");
     }
 
     Template() {
-        return `<div class="center-container login">
+        return `<div class="center-container border login">
                     <div class="form-container">
-                        <div class="form-inform">
-                        </div>
                         <form class="login-form">
                             <div class="input-container">
                                 <label>username</label>
@@ -19,8 +17,10 @@ export default class extends abstractview {
                             <div class="input-container">
                                 <label>password</label>
                                 <input type="password" name="password" autocomplete="current-password">
-                            </div>                            
-                            <a onclick="login();" class="login-btn btn">로그인</a>                            
+                            </div>
+                            <div class="login-btn btn pointer" onclick="login();">                          
+                                <a>로그인</a>                            
+                            </div>
                         </form>
                         <div class="form-tail">
                             <div class="form-other">
@@ -30,8 +30,7 @@ export default class extends abstractview {
                             </div>
                         </div>
                     <!-- end of form-container -->
-                    </div>
-                    
+                    </div>                    
                 <!-- end of center-container -->
                 </div>`;
     }

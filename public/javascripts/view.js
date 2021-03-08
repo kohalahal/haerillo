@@ -4,7 +4,10 @@ import Join from "./views/join.js";
 import Login from "./views/login.js";
 import Boards from "./views/boards.js";
 import Board from "./views/board.js";
+import Modal from "./views/modal.js";
 
+const modal = new Modal();
+window.modal = modal;
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -22,8 +25,12 @@ const navigateTo = url => {
 };
 
 const router = async () => {
+
+    console.log("1");
+    document.querySelector("body").classList.remove("color");
     const header = new Header();
-    header.render();
+    header.init();
+    console.log("1");
 
     const routes = [
         { path: "/", view: Index },
@@ -32,12 +39,15 @@ const router = async () => {
         { path: "/board", view: Boards },
         { path: "/board/:id", view: Board }
     ];
+
     const potentialMatches = routes.map(route => {
         return {
             route: route,
             result: location.pathname.match(pathToRegex(route.path))
         };
     });
+    console.log("1");
+
     let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
     if (!match) {
         match = {
@@ -45,8 +55,11 @@ const router = async () => {
             result: [location.pathname]
         };
     }
-    const view = new match.route.view(getParams(match));
-    view.render();
+
+    const view = new match.route.view(getParams(match), modal);
+    view.init();
+    console.log("1");
+
 };
 
 
