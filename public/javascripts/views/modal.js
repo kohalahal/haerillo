@@ -71,6 +71,6 @@ export default class extends abstractview {
         const modal = document.querySelector(".modal");
         modal.classList.remove("visible");
         modal.classList.remove("active");
-        modal.innerText = "";
+        modal.querySelector(".message").innerText = "";
     }
 }

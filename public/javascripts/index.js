@@ -1,6 +1,7 @@
 import Modal from "./views/modal.js";
 
 const modal = new Modal();
+const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 window.join = join;
 window.login = login;
@@ -13,18 +14,27 @@ function goToIndex() {
 
 function join() {
     const username = document.querySelector("input[name=username]").value;
-    const email = document.querySelector("input[name=email]").value;
-    const password = document.querySelector("input[name=password]").value;
     if(!username) {
         modal.simple("유저네임을 입력해주세요.");
         return;
     }
-    if(!email) {
-        modal.simple("이메일을 입력해주세요.");
+    const email = document.querySelector("input[name=email]").value;
+    if(!email.match(mailformat)) {
+        modal.simple("이메일을 정확히 입력해주세요.");
         return;
-    } 
+    }
+    const password = document.querySelector("input[name=password]").value;
     if(!password) {
         modal.simple("패스워드를 입력해주세요.");
+        return;
+    }
+    const passwordComfirm = document.querySelector("input[name=passwordCofrim]").value;
+    if(!passwordComfirm) {
+        modal.simple("확인용 패스워드를 입력해주세요.");
+        return;
+    }
+    if(password!=passwordComfirm) {
+        modal.simple("패스워드가 서로 일치하지 않습니다.");
         return;
     }
     const data = {
