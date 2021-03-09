@@ -12,7 +12,7 @@ export default class extends abstractview {
         try {
             const data = await this.getData();
             if(data) {
-                this.render(data);
+                this.render(data.boards.reverse());
                 return;
             } 
         } catch(err) {
@@ -49,7 +49,7 @@ export default class extends abstractview {
         });
     }
 
-    Template(data) {
+    Template(boards) {
         return `<div class="boards">
                     <ul>
                         <li class="board add-board pointer" onclick="createBoard();">
@@ -63,7 +63,7 @@ export default class extends abstractview {
 
                             </div>
                         </li>
-                        ${data.boards.reduce((acc, board) => acc += this.Board(board), '')}
+                        ${boards.reduce((acc, board) => acc += this.Board(board), '')}
                     </ul>
                 </div>`;
     }
