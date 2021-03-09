@@ -41,12 +41,12 @@ router.get('/:token', async (req, res) => {
 });
 
 /* 2.온라인 클라이언트에 이벤트로 보드 보내기(보드 서비스에서 사용) */
-function sendEvents(boardId, board) {
+function sendEvents(boardId, data) {
     if(!onlineClients[boardId]) {
         onlineClients[boardId] = [];
     }
     onlineClients[boardId].forEach((client) => {
-        client.res.write(`data: ${JSON.stringify(board)} \n\n`);
+        client.res.write(`data: ${JSON.stringify(data)} \n\n`);
     });
 }
 
