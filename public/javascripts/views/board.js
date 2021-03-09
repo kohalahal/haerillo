@@ -401,11 +401,13 @@ export default class extends abstractview {
                 return;
             }
         });
+        console.log(`${this.listIdBeforeCardDrag}와 ${listId}를 비교`);
+        console.log(`${this.indexBeforeCardDrag}와 ${index}를 비교`);
         if(this.listIdBeforeCardDrag == listId && this.indexBeforeCardDrag == index) return;
         this.sse.pause();
-        if(this.cardBeforeDragListId != listId) {
+        if(this.listIdBeforeCardDrag != listId) {
             const cardsInListNow = Array.from(list.querySelectorAll(".card.active"));
-            const cardsMovingBackward = cardsInListNow.filter((i) => 
+            const cardsMovingBackward = cardsInListNow.filter((e, i) => 
                 i >= index
             );
             if(cardsMovingBackward.length>0) cardsMovingBackward.forEach((card, i) => {                
@@ -413,7 +415,7 @@ export default class extends abstractview {
             });
             const listBefore = document.querySelector(".list.id-"+this.listIdBeforeCardDrag);
             const cardsInListBefore = Array.from(listBefore.querySelectorAll(".card.active"));
-            const cardsMovingForward = cardsInListBefore.filter((i) => 
+            const cardsMovingForward = cardsInListBefore.filter((e, i) => 
                 i > this.indexBeforeCardDrag
             );
             if(cardsMovingForward.length>0) cardsMovingForward.forEach((card, i) => {
@@ -424,19 +426,22 @@ export default class extends abstractview {
         const bigger = index < this.indexBeforeCardDrag? this.indexBeforeCardDrag : index;
         const smaller = index < this.indexBeforeCardDrag? index : this.indexBeforeCardDrag;
         const cardsInList = Array.from(list.querySelectorAll(".card.active"));
-        const cardsMoving = cardsInList.filter((i) => 
+        const cardsMoving = cardsInList.filter((e, i) => 
             i <= bigger && i >= smaller 
         );
         if(cardsMoving.length>0) cardsMoving.forEach((card, i) => {
             this.moveCardRequest(null, card.firstElementChild.innerText, smaller + i);
         });   
+        console.log(`${smaller}랑 ${bigger} 사이 카드들은 ${cardsMoving.length}개`);
     }
     moveCardRequest(listId, cardId, index) {
+        console.log(listId+"의"+cardId+"를"+index+"로옮겨");
         const boardId = this.params.id;
         const cardInput = { board_id: boardId };
         if(listId) cardInput.list_id = listId;
         cardInput.index = index;
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/cards/"+cardId, cardInput).then((data) => {
+            console.log("ok");
         });
     }
     createListRequest(event) {
@@ -486,7 +491,7 @@ export default class extends abstractview {
         });
         if(index+1 < cardsInList.length) {
             const array = Array.from(cardsInList);
-            array.filter((i) => 
+            array.filter((e, i) => 
                 i > index
             ).forEach((card, i) => {
                 this.moveCardRequest(null, card.firstElementChild.innerText, index + i );

@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       //이메일 형식 확인
       validate: {
-        isEmail: true
+        // isEmail: true
       },
     },
     createdAt: Sequelize.DATE,
