@@ -1,8 +1,588 @@
+/* _________________________________________________
+
+For: Haerillo
+Original Author: Haeri Lee
+URL: 
+____________________________________________________
+
+`GLOSSARY`:
+
+  NORMALIZE (instead of reset)
+
+  ROOT
+  TYPOGRAPHY
+  BASE STYLES
+    -LINKS
+    -FIGURES & IMAGES
+    -TABLES
+    -FORMS
+  STRUCTURE
+    -HEADER
+    -FOOTER
+    -MAIN STRUCTURE
+  GENERAL CONTENT
+  ...
+  MEDIA QUERIES
+  UTILITY CLASSES
+  PRINT QUERIES
+
+`COLOURS`:
+  colorname : #value ;
+
+____________________________________________________ */
+
+
+/*  `ROOT`
+------------------------------------------------------------------*/
+
+html {
+
+}
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 0;
+  background-color: #fbf4ea;
+  
+}
+body.color {
+  background-color: #2baf4b;
 }
 
-a {
-  color: #00B7FF;
+/*  `TYPOGRAPHY` (Base)
+------------------------------------------------------------------*/
+/* 폰트 */
+/* 로고폰트 */
+.logo {
+  font-family: 'Fredoka One', cursive;
 }
+html {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+}
+body {
+  color: rgb(37, 12, 2);
+}
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
+  /* shared typographic styles */
+  width: fit-content;
+  margin: auto;
+}
+h1 { 
+  font-size: 3rem;
+}
+h2 { 
+  font-size: 2rem;
+}
+h3 { 
+  font-size: 1.8rem;
+}
+h4 { 
+  font-size: 1.2rem;
+}
+h5 { 
+  font-size: 0.8rem;
+}
+h6 { 
+  font-size: 0.5rem;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/*  `BASE STYLES`
+------------------------------------------------------------------*/
+
+/*-- ~LINKS --*/
+
+/*-- ~FIGURES & IMAGES --*/
+
+/*-- ~TABLES --*/
+
+/*-- ~FORMS --*/
+textarea:focus{
+  outline: none;
+}
+
+/*  `HEADER`
+------------------------------------------------------------------*/
+
+header{
+  width: 100%;
+  height: 50px;  
+  background-color: #b7dc77;
+  border-bottom: 1px solid black;
+}
+.logo-ani {
+  color: #ffeb72;;
+  float: left;
+  margin: auto 30px;
+  font-size: 2.2rem;
+  padding: 5px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+#logo {
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+@keyframes changeLetter {
+  0% {
+    content: "";
+  }
+  5% {
+    content: ".";
+  }
+  10% {
+    content: "..";
+  }
+  15% {
+    content: "...";
+  }
+  20%, 100% {
+    content: "...O";
+  }
+}
+.logo-ani::before {
+  content: "";
+  position: absolute;
+  left: 173px;
+  animation: changeLetter 3s 0.5s linear infinite alternate;
+}
+.logo-ani:hover {
+  color: #ff7d3f;
+}
+nav {
+  font-weight: 600;
+  float: right;
+  height: 50px;
+}
+nav ul{
+  list-style-type: none;
+  padding: 0 5px;
+  margin: 0;
+}
+nav ul li {
+  display: inline-block;
+  margin: 10px 10px;
+  height: -webkit-fill-available;
+}
+nav a:hover {  
+  color: #0f737d;
+}
+
+/*  `FOOTER`
+------------------------------------------------------------------*/
+
+
+/*  `MAIN STRUCTURE`
+------------------------------------------------------------------*/
+.main-container {
+  padding-top: 3vh;
+  position: relative;
+  height: 91vh;
+  margin: 0 5vw;
+}
+
+/* 화면 중앙에 위치하는 컨테이너 ex)로그인창 */
+.center-container {
+  border-radius: 13px;
+  position: absolute;
+  width: 500px;
+  height: 330px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.modal {
+  background-color: #f3ed80;
+  width: 500px;
+  height: 300px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  opacity: 0;
+  transition: all 1s;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  text-align: center;
+}
+.modal.visible {
+  opacity: 1;
+}
+.modal.active {
+  pointer-events: all;
+}
+.modal .message {
+  margin: auto;
+  padding: 100px;
+  max-height: 300px;
+  font-size: 1.5rem;
+}
+.modal a {
+  padding: 20px;
+  border: 1px solid black;
+  margin: 20px;
+  width: 80%;
+  background-color: #2baf4b;
+}
+.modal a:hover {
+  background-color: #c53737;
+}
+
+/*  `GENERAL CONTENT`
+------------------------------------------------------------------*/
+.pointer {
+  cursor: pointer;
+}
+.dragging {
+  opacity: .5;
+}
+.border {
+  border: 1px solid #675353;
+}
+.shadow {
+  -webkit-box-shadow: 4px 4px 11px 0px rgba(0,0,0,0.24);
+  -moz-box-shadow: 4px 4px 11px 0px rgba(0,0,0,0.24);
+  box-shadow: 4px 4px 11px 0px rgba(0,0,0,0.24);
+}
+/*  `SPECIFIC PAGE`
+------------------------------------------------------------------*/
+/* 홈페이지 index */
+.index-content {
+  min-height: 90vh;
+  text-align: center;
+}
+.index-message {
+  display: flex;
+  margin: auto;
+  min-height: 60vh;
+  padding: 50px;
+  max-width: 100%;
+  cursor: default;
+}
+.index-message.text {
+  font-size: 5rem;
+  min-width: 30%;
+  max-width: 40%;
+}
+.text .logo {
+  color: #ff938f;
+  font-size: 7rem;
+  -webkit-text-stroke-width: .5px;
+  -webkit-text-stroke-color: black;
+}
+.index-message.image {
+  text-align: center;
+  border-radius: 10px;
+}
+.index-message.image img {
+  max-width: 40vw;
+  object-fit: contain;
+}
+.image h2 {
+  padding: 10%;
+}
+/* 로그인 l조인 페이지 */
+.login {
+  background-color: coral;
+}
+.join {
+  background-color: #f3e779;
+}
+.form-container {
+  height: 100%;
+  font-size: 1.1rem;
+}
+.form-container form {
+  min-height: 330px;
+  box-sizing: border-box;
+}
+.login-form {
+  padding: 55px;
+}
+.join-form {
+  padding: 10px 55px;
+}
+.input-container {
+  margin: auto;
+}
+.input-container input {
+  width: 98%;
+}
+.btn {
+  padding: 20px;
+  border: 1px solid black;
+  margin: 20px;
+  width: 80%;
+}
+.login-btn {
+  background-color: #7bc333;
+}
+.join-btn {
+  background-color: #ff8aa0;
+}
+.login-btn:hover {
+  background-color: #c53737;
+}
+.join-btn:hover {
+  background-color: #8bd16f;
+}
+.form-tail {
+  text-align: end;
+  padding: 5px 20px;
+}
+/* 보드 목록 페이지 */
+.boards ul {
+  list-style-type: none;
+  padding: 20px;
+  margin: 0 4vw;
+}
+li.board {
+  height: 120px;
+  padding: 20px;
+  margin: 20px;
+  background-color: #ffc198;
+  border-radius: 7px;
+}
+li.board:hover {
+  background-color: #faec6d;
+}
+li.board.add-board {
+  background-color: #e9e5d9;
+  border-color: #ccd8cb;
+  color: #9db5a6;
+}
+li.board.add-board:hover {
+  background-color: #d4e6b4;
+  border-color: #aebdac;
+  color: #45554b;
+}
+.board-small {
+  height: inherit;
+}
+.board-small-title {
+  min-height: 2.3rem;
+  height: 70%;
+  word-break: break-all;
+  color: #b74836;
+}
+.board-small-title:hover {
+  color: #35711d;
+}
+.board-small-date {
+  font-size: 0.8rem;
+  text-align: end;
+}
+.board-delete {
+  display: none;
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  background: #ddf173;
+  border-radius: 5px;
+}
+.board-delete .fas {
+  font-size: 2rem;
+}
+li.board:hover .board-delete {
+  display: block;
+}
+.board-delete:hover {
+  background-color: #a9e665;
+}
+/* for flexbox */
+@supports(display: flex) {
+   .boards ul {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  li.board {
+    display: block;
+    float: none;
+  }
+}
+/* for grid */
+@supports(display: grid) {
+  .boards ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  li.board {
+    width: auto;
+  }
+}
+/* 보드 상세 페이지 */
+div.board {
+  background-color: #c5d2c8;
+  min-height: 75vh;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+.board-title {
+  text-align: center;
+  background-color: #f18b49;
+  border-radius: 8px;
+  color: #ffffff;
+  width: fit-content;
+  padding: 8px 5vw;
+  margin: 10px auto;
+  max-width: 75vw;
+  border: 1px solid black;
+}
+.list-container {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.list {
+  position: relative;
+  overflow: hidden;
+  background-color: #f5eba6;
+  padding: 10px;
+  margin: 10px;
+  height: fit-content;
+  border-radius: 5px;
+}
+.list.inactive {
+  background-color: #dddebe;
+}
+.list.inactive .text {
+  color: #796a6a;
+}
+.list.text-container {
+  height: 30px;
+}
+.card-container{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.card {
+  margin: 4px;
+  background-color: white;
+  border-radius: 5px;
+}
+.card.active {
+}
+.card.active:hover {
+  background-color: #eff3cf;
+}
+.card.inactive {
+  background-color: #f1efe7;
+  color: #3d3c32;
+}
+.card.inactive .text {
+  color: #796a6a;
+}
+.text-container {  
+  padding: 8px 6px;
+  text-align: justify;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.list-title {
+  min-height: 2.2rem;
+  width: fit-content;
+  display: contents;
+}
+.card-content {
+  min-height: 1.8rem;
+}
+.input-container {
+  width: 80%;
+}
+.text-container input {
+  height: 35px;
+  min-width: 233px;
+  max-width: 350px;
+  width: 97%;
+}
+.text-container textarea {
+  width: 98%;
+  height: auto;
+  margin-bottom: 4px;
+  max-height: 162px;
+  min-height: 54px;
+}
+.ok-btn-container {
+  text-align: right;
+}
+.cancel-btn {
+  cursor: pointer;
+  padding: 0 10px;
+}
+.list .ok-btn {
+  display: inline-block;
+  padding: 5px 3%;
+  border: 1px solid #c6d0c5;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.card .ok-btn {
+  display: inline-block;
+  padding: 6px 20px;
+  border: 1px solid #c6d0c5;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.ok-btn:hover {
+  color: black;
+  background-color: #d3adade3;
+}
+.delete-btn {
+  display: none !important;
+  position: absolute;
+  right: 16px;
+  margin: 0.4rem;
+  background-color: #dfe4e0e3;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+.fa-trash-alt {
+  padding: 8px;
+  font-size: 0.8rem;
+}
+/* 텍스트컨테이너 호버시 삭제버튼 */
+.text-container:hover .delete-btn.hover, .card.active:hover .delete-btn.hover {
+  display: block !important; 
+}
+/* for flexbox */
+@supports(display: flex) {
+  .list-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .list-container li {
+    display: block;
+    float: none;
+  }
+}
+/* for grid */
+@supports(display: grid) {
+  .list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+  }
+  
+  .list-container li {
+    width: auto;
+  }
+}
+
+/*  `UTILITY STYLES`
+------------------------------------------------------------------*/
