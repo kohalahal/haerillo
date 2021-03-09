@@ -138,7 +138,8 @@ export default class extends abstractview {
                 const afterElement = this.getDragAfterElement(list, e.clientY);
                 const card = document.querySelector('.dragging');
                 if (afterElement == null) {
-                    list.appendChild(card);
+                    const addCard = list.querySelector(".card.inactive");
+                    list.insertBefore(card, addCard);
                 } else {
                     list.insertBefore(card, afterElement);
                     
@@ -166,6 +167,11 @@ export default class extends abstractview {
         okbtn.innerText = "OK";
         okbtn.classList.add("ok-btn");
         okbtn.addEventListener("click", this.updateBoard);
+        input.addEventListener("keyup", function(event) {
+            if(event.key === 'Enter') {
+                okbtn.click();
+            }
+        });
         div.appendChild(cancelbtn);
         div.appendChild(okbtn);
         board.innerText = "";
@@ -199,6 +205,11 @@ export default class extends abstractview {
         okbtn.innerText = "OK";
         okbtn.classList.add("ok-btn");
         okbtn.addEventListener("click", this.updateList);
+        input.addEventListener("keyup", function(event) {
+            if(event.key === 'Enter') {
+                okbtn.click();
+            }
+        });
         div.appendChild(cancelbtn);
         div.appendChild(okbtn);
         list.innerText = "";
@@ -217,9 +228,9 @@ export default class extends abstractview {
         card.classList.remove("pointer");
         card.closest(".card").querySelector(".delete-btn").classList.remove("hover");
         const text = card.innerText;
-        const textarea = document.createElement("textarea");
-        textarea.classList.add("card-input");
-        textarea.value = text;
+        const input = document.createElement("textarea");
+        input.classList.add("card-input");
+        input.value = text;
         const div = document.createElement("div");
         div.classList.add("ok-btn-container");
         const cancelbtn = document.createElement("a");
@@ -230,10 +241,15 @@ export default class extends abstractview {
         okbtn.innerText = "OK";
         okbtn.classList.add("ok-btn");
         okbtn.addEventListener("click", this.updateCard);
+        input.addEventListener("keyup", function(event) {
+            if(event.key === 'Enter') {
+                okbtn.click();
+            }
+        });
         div.appendChild(cancelbtn);
         div.appendChild(okbtn);
         event.target.innerText = "";
-        event.target.appendChild(textarea);     
+        event.target.appendChild(input);     
         event.target.appendChild(div); 
         this.activeCardEdior = card;
         this.cardContent = text;
@@ -276,8 +292,6 @@ export default class extends abstractview {
         this.cardContent = "";
     }
     makeListInput(event) {
-        console.log(this.params.id);
-
         if(event) event.stopPropagation();
         if(this.activeListEdior) {
             this.cancelEditListEventAction();
@@ -299,6 +313,11 @@ export default class extends abstractview {
         okbtn.innerText = "OK";
         okbtn.classList.add("ok-btn");
         okbtn.addEventListener("click", this.createList);
+        input.addEventListener("keyup", function(event) {
+            if(event.key === 'Enter') {
+                okbtn.click();
+            }
+        });
         div.appendChild(cancelbtn);
         div.appendChild(okbtn);
         list.appendChild(input);
@@ -316,9 +335,9 @@ export default class extends abstractview {
         card.removeEventListener("click", this.addCardEventAction);
         card.classList.remove("pointer");
         card.innerText = "";
-        const textarea = document.createElement("textarea");
-        textarea.classList.add("card-input");
-        textarea.value = value;
+        const input = document.createElement("textarea");
+        input.classList.add("card-input");
+        input.value = value;
         const div = document.createElement("div");
         div.classList.add("ok-btn-container");
         const cancelbtn = document.createElement("a");
@@ -329,11 +348,16 @@ export default class extends abstractview {
         okbtn.innerText = "OK";
         okbtn.classList.add("ok-btn");
         okbtn.addEventListener("click", this.createCard);
+        input.addEventListener("keyup", function(event) {
+            if(event.key === 'Enter') {
+                okbtn.click();
+            }
+        });
         div.appendChild(cancelbtn);
         div.appendChild(okbtn);
-        card.appendChild(textarea);
+        card.appendChild(input);
         card.appendChild(div);
-        this.activeCardInput = textarea;
+        this.activeCardInput = input;
     }
     removeListInput(event) {
         if(event) event.stopPropagation();
@@ -356,7 +380,7 @@ export default class extends abstractview {
         const title = document.querySelector(".board-title").querySelector('input').value;
         const boardInput = { title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/"+boardId, boardInput).then((data) => {
-            this.modal.simple("보드가 수정되었습니다.");
+            this.modal.simple(data.message);
         });
     }
     updateListRequest(event) {
@@ -366,7 +390,7 @@ export default class extends abstractview {
         const title = list.querySelector('input').value;
         const listInput = { board_id: boardId, title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/"+listId, listInput).then((data) => {
-            this.modal.simple("리스트가 수정되었습니다.");
+            this.modal.simple(data.message);
         });
     }
     updateCardRequest(event) {
@@ -378,7 +402,7 @@ export default class extends abstractview {
         const content = list.querySelector('textarea').value;
         const cardInput = { board_id: boardId, list_id: listId, content: content };
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/cards/"+cardId, cardInput).then((data) => {
-            this.modal.simple("카드가 수정되었습니다.");
+            this.modal.simple(data.message);
         });
     }
     memorizeCardDrag(card) {
@@ -401,21 +425,17 @@ export default class extends abstractview {
                 return;
             }
         });
-        console.log(`${this.listIdBeforeCardDrag}와 ${listId}를 비교`);
-        console.log(`${this.indexBeforeCardDrag}와 ${index}를 비교`);
         if(this.listIdBeforeCardDrag == listId && this.indexBeforeCardDrag == index) return;
         this.sse.pause();
         if(this.listIdBeforeCardDrag != listId) {
-            const cardsInListNow = Array.from(list.querySelectorAll(".card.active"));
-            const cardsMovingBackward = cardsInListNow.filter((e, i) => 
+            const cardsMovingBackward = [...list.querySelectorAll(".card.active")].filter((e, i) => 
                 i >= index
             );
             if(cardsMovingBackward.length>0) cardsMovingBackward.forEach((card, i) => {                
                 this.moveCardRequest(i==0?listId:null, card.firstElementChild.innerText, index + i );
             });
             const listBefore = document.querySelector(".list.id-"+this.listIdBeforeCardDrag);
-            const cardsInListBefore = Array.from(listBefore.querySelectorAll(".card.active"));
-            const cardsMovingForward = cardsInListBefore.filter((e, i) => 
+            const cardsMovingForward = [...listBefore.querySelectorAll(".card.active")].filter((e, i) => 
                 i > this.indexBeforeCardDrag
             );
             if(cardsMovingForward.length>0) cardsMovingForward.forEach((card, i) => {
@@ -425,23 +445,19 @@ export default class extends abstractview {
         } 
         const bigger = index < this.indexBeforeCardDrag? this.indexBeforeCardDrag : index;
         const smaller = index < this.indexBeforeCardDrag? index : this.indexBeforeCardDrag;
-        const cardsInList = Array.from(list.querySelectorAll(".card.active"));
-        const cardsMoving = cardsInList.filter((e, i) => 
+        const cardsMoving = [...list.querySelectorAll(".card.active")].filter((e, i) => 
             i <= bigger && i >= smaller 
         );
         if(cardsMoving.length>0) cardsMoving.forEach((card, i) => {
             this.moveCardRequest(null, card.firstElementChild.innerText, smaller + i);
         });   
-        console.log(`${smaller}랑 ${bigger} 사이 카드들은 ${cardsMoving.length}개`);
     }
     moveCardRequest(listId, cardId, index) {
-        console.log(listId+"의"+cardId+"를"+index+"로옮겨");
         const boardId = this.params.id;
         const cardInput = { board_id: boardId };
         if(listId) cardInput.list_id = listId;
         cardInput.index = index;
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/cards/"+cardId, cardInput).then((data) => {
-            console.log("ok");
         });
     }
     createListRequest(event) {
@@ -451,7 +467,7 @@ export default class extends abstractview {
         const index = document.querySelectorAll('.list').length - 1;
         const list = { board_id: boardId, title: title, index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists", list).then((data) => {
-            this.modal.simple("리스트가 등록되었습니다.");
+            this.modal.simple(data.message);
         });
     }
     createCardRequest(event) {
@@ -463,7 +479,7 @@ export default class extends abstractview {
         const index = list.querySelectorAll('.card').length - 1;
         const card = { board_id: boardId, list_id: listId, content: content , index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists/cards", card).then((data) => {
-            this.modal.simple("카드가 등록되었습니다.");
+            this.modal.simple(data.message);
         });
     }
     deleteListRequest(event) {
@@ -472,7 +488,7 @@ export default class extends abstractview {
         const listId = event.target.closest('.list').firstElementChild.innerText;
         const data = { board_id: boardId };
         this.makeRequest("DELETE", "http://localhost:3000/boards/lists/"+listId, data).then((data) => {
-            this.modal.simple("리스트가 삭제되었습니다.");
+            this.modal.simple(data.message);
         });
     }
     deleteCardRequest(event) {
@@ -490,8 +506,7 @@ export default class extends abstractview {
             }
         });
         if(index+1 < cardsInList.length) {
-            const array = Array.from(cardsInList);
-            array.filter((e, i) => 
+            [...cardsInList].filter((e, i) => 
                 i > index
             ).forEach((card, i) => {
                 this.moveCardRequest(null, card.firstElementChild.innerText, index + i );
@@ -499,7 +514,7 @@ export default class extends abstractview {
         }
         const data = { board_id: boardId, list_id: listId };
         this.makeRequest("DELETE", "http://localhost:3000/boards/lists/cards/"+cardId, data).then((data) => {
-            this.modal.simple("카드가 삭제되었습니다.");
+            this.modal.simple(data.message);
         });
     }
 
@@ -531,7 +546,7 @@ export default class extends abstractview {
     }
 
     getDragAfterElement(list, y) {
-        const draggableElements = [...list.querySelectorAll('.card:not(.dragging)')];
+        const draggableElements = [...list.querySelectorAll('.card.active:not(.dragging)')];
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;

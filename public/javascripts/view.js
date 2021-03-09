@@ -26,11 +26,9 @@ const navigateTo = url => {
 
 const router = async () => {
 
-    console.log("1");
     document.querySelector("body").classList.remove("color");
     const header = new Header();
     header.init();
-    console.log("1");
 
     const routes = [
         { path: "/", view: Index },
@@ -46,7 +44,6 @@ const router = async () => {
             result: location.pathname.match(pathToRegex(route.path))
         };
     });
-    console.log("1");
 
     let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
     if (!match) {
@@ -58,10 +55,7 @@ const router = async () => {
 
     const view = new match.route.view(getParams(match), modal);
     view.init();
-    console.log("1");
-
 };
-
 
 window.addEventListener("popstate", router);
 document.addEventListener("DOMContentLoaded", () => {

@@ -9,7 +9,7 @@ export default class extends abstractview {
         try {
             const data = await this.getData();
             if(data) {
-                this.render("회원님");
+                this.render(JSON.parse(data).username);
                 return;
             } 
         } catch(err) {
@@ -65,7 +65,7 @@ export default class extends abstractview {
         }
         return ` <ul>
                     <li>
-                        ${data}, 어서오세요!
+                        ${data}님, 어서오세요!
                     </li>
                     <li>
                         <a href="/board" data-link>보드</a>

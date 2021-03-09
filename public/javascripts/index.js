@@ -7,6 +7,7 @@ window.join = join;
 window.login = login;
 window.logout = logout;
 window.createBoard = createBoard;
+window.deleteBoard = deleteBoard;
 
 function goToIndex() {
     document.querySelector("#logo").click();
@@ -42,7 +43,7 @@ function join() {
         email,
         password
     };
-    post("auth/join", data, false).then((res) => {
+    request("POST", "auth/join", data, false).then((res) => {
         modal.simple(res.message);
         goToIndex();
     }).catch((res) => {
@@ -65,12 +66,10 @@ function login() {
         username,
         password
     };
-    post("auth/login", data, false).then((res) => {
-        window.localStorage.setItem("token", res.token);
+    request("POST", "auth/login", data, false).then((res) => {
         goToIndex();
-    }).catch((res) => {
-        modal.simple(res.message);
     });
+    modal.simple(res.message);
 }
 
 function logout() {
@@ -80,19 +79,30 @@ function logout() {
 }
 
 function createBoard() {
-    post("boards", null, true).then((data) => {
+    request("POST", "boards", null, true).then((data) => {
         window.location = "http://localhost:3000/board/"+data.boardId;
+        modal.simple(data.message);
     }).catch(() => {
         modal.alertTryAgain();
     });
 }
 
-function post(path, data, needAuthentication) {
+function deleteBoard(boardId) {
+    if(!confirm("보드를 정말로 삭제하시겠습니까?")) return;
+    request("DELETE", "boards/"+boardId, null, true).then((data) => {
+        document.querySelector("[href='/board']").click();
+        modal.simple(data.message);
+    }).catch(() => {
+        modal.alertTryAgain();
+    });
+}
+
+function request(method, path, data, needAuthentication) {
     return new Promise(function (resolve, reject) {
         const url = "http://localhost:3000/"+path;
         const xhr = new XMLHttpRequest();
         let input = JSON.stringify(data);
-        xhr.open('POST', url);
+        xhr.open(method, url);
         if(needAuthentication) {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("token"));
             input = undefined;

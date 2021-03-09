@@ -1,7 +1,6 @@
 import Board from "./views/board.js";
 import Modal from "./views/modal.js";
 
-
 export default class {
     constructor(token, board, modal) {
         this.token = token;

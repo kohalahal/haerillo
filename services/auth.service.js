@@ -43,14 +43,9 @@ async function register(userInput) {
     //유저 생성(username, email 중복 시 실패)
     let user = await User.create(userInput);
     if(user) {
-         // 가입 성공
-         console.log('가입성공');
          return true;
-    } else {
-        // 실패
-        console.log('가입실패');
-        return false;
-    }	
+    }         
+    return false;
 }
 
 exports.register = register;

@@ -30,21 +30,16 @@ const boardService = require('../services/board.service');
 /* GET */
 /*  1.boards 주기 */
 router.get('/', async (req, res) => {
-  console.log("getboards");
-  const userId = req.user.id;
-  const boards = await boardService.getBoardList(userId);
-  console.log(boards);
+  const boards = await boardService.getBoardList(req.user.id);
   res.status(http.StatusCodes.OK).json({ boards, message: '보드 목록 가져오기 성공.' });
 });
 
 /*  2.board 주기 */
 router.get('/:boardId', async (req, res) => {
-  const userId = req.user.id;
-  const boardId = req.params.boardId;
-  const board = await boardService.getBoard(userId, boardId);
+  const board = await boardService.getBoard(req.user.id, req.params.boardId);
   if(board) {
     /* 스트림 토큰 발급 */
-    const streamToken = jwtUtility.generateStreamToken(boardId);
+    const streamToken = jwtUtility.generateStreamToken(req.params.boardId);
     /* 늘 토큰을 새로 발급받도록 캐시 없애기 */
     res.set('Cache-Control', 'no-store');
     res.status(http.StatusCodes.OK).json({ streamToken, board, message: '보드와 스트림 토큰 전송.' });
@@ -57,11 +52,10 @@ router.get('/:boardId', async (req, res) => {
 /* POST */
 /*  1.보드 등록 */
 router.post('/', async (req, res) => {
-  const userId = req.user.id;
   const boardInput = {
     title: req.body.title || '새로운 보드'
   };
-  const isCompleted = await boardService.createBoard(userId, boardInput);
+  const isCompleted = await boardService.createBoard(req.user.id, boardInput);
   //보드 등록 완료
   if(isCompleted) {
     res.status(http.StatusCodes.CREATED).json({ message: '보드가 생성되었습니다.', boardId: isCompleted.id });
@@ -73,13 +67,12 @@ router.post('/', async (req, res) => {
 
 /*  2.리스트 등록 */
 router.post('/lists', async (req, res) => {
-  const userId = req.user.id;
   const listInput = {
     boardId: req.body.board_id,
     title: req.body.title || '',
     index: req.body.index
   }
-  const isCompleted = await boardService.createList(userId, listInput);
+  const isCompleted = await boardService.createList(req.user.id, listInput);
   if(isCompleted) {
     res.status(http.StatusCodes.CREATED).json({ message: '리스트가 생성되었습니다.' });
   } else {
@@ -89,14 +82,13 @@ router.post('/lists', async (req, res) => {
 
 /*  3.카드 등록 */
 router.post('/lists/cards', async (req, res) => {
-  const userId = req.user.id;
   const cardInput = {
     boardId: req.body.board_id,
     listId: req.body.list_id,
     content: req.body.content || '',
     index: req.body.index
   }
-  const isCompleted = await boardService.createCard(userId, cardInput);
+  const isCompleted = await boardService.createCard(req.user.id, cardInput);
   if(isCompleted) {
     res.status(http.StatusCodes.CREATED).json({ message: '카드가 생성되었습니다.' });
   } else {
@@ -107,12 +99,11 @@ router.post('/lists/cards', async (req, res) => {
 /* PUT */
 /*  1.보드 수정 */
 router.put('/:boardId', async (req, res) => {
-  const userId = req.user.id;
   const boardInput = {
     id: req.params.boardId,
     title: req.body.title || ''
   };
-  const isCompleted = await boardService.updateBoard(userId, boardInput);
+  const isCompleted = await boardService.updateBoard(req.user.id, boardInput);
   //보드 수정 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '보드가 수정되었습니다.' });
@@ -123,16 +114,11 @@ router.put('/:boardId', async (req, res) => {
 });
 /*  2.리스트 수정 */
 router.put('/lists/:listId', async (req, res) => {
-  const userId = req.user.id;
-  const boardId = req.body.board_id;
-  const listId = req.params.listId;
-  const title = req.body.title;
-  const index = req.body.index;
-  if(boardId==undefined || listId==undefined) return res.status(http.StatusCodes.UNAUTHORIZED).json({ message: '리스트 수정 실패' });
+  if(req.body.board_id==undefined) return res.status(http.StatusCodes.BAD_REQUEST).json({ message: '리스트 수정 실패' });
   const listInput = {};
-  if(title!=undefined) listInput.title = title;
-  if(index!=undefined) listInput.index = index;
-  const isCompleted = await boardService.updateList(userId,  boardId, listId, listInput);
+  if(req.body.title!=undefined) listInput.title = req.body.title;
+  if(req.body.index!=undefined) listInput.index = req.body.index;
+  const isCompleted = await boardService.updateList(req.user.id,  req.body.board_id, req.params.listId, listInput);
   //리스트 수정 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '리스트가 수정되었습니다.' });
@@ -143,22 +129,12 @@ router.put('/lists/:listId', async (req, res) => {
 });
 /*  3.카드 수정 */
 router.put('/lists/cards/:cardId', async (req, res) => {
-  const userId = req.user.id;
-  const boardId = req.body.board_id;
-  const listId = req.body.list_id;
-  const cardId = req.params.cardId;
-  const content = req.body.content;
-  const index = req.body.index;
-  if(boardId==undefined) return res.status(http.StatusCodes.UNAUTHORIZED).json({ message: '카드 수정 실패' });
+  if(req.body.board_id==undefined) return res.status(http.StatusCodes.BAD_REQUEST).json({ message: '카드 수정 실패' });
   const cardInput = {};
-  console.log("listId:"+listId+"content"+content+"index"+index);
-  if(listId!=undefined) cardInput.listId = listId;
-  if(content!=undefined) cardInput.content = content;
-  if(index!=undefined) cardInput.index = index;
-  console.log("@@@@@");
-  console.log(cardInput);
-
-  const isCompleted = await boardService.updateCard(userId, boardId, cardId, cardInput);
+  if(req.body.list_id!=undefined) cardInput.listId = req.body.list_id;
+  if(req.body.content!=undefined) cardInput.content = req.body.content;
+  if(req.body.index!=undefined) cardInput.index = req.body.index;
+  const isCompleted = await boardService.updateCard(req.user.id, req.body.board_id, req.params.cardId, cardInput);
   //카드 수정 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '카드가 수정되었습니다.' });
@@ -170,9 +146,7 @@ router.put('/lists/cards/:cardId', async (req, res) => {
 /* DELETE */
 /*  1.보드 삭제 */
 router.delete('/:boardId', async (req, res) => {
-  const userId = req.user.id;
-  const boardId = req.params.boardId;
-  const isCompleted = await boardService.removeBoard(userId, boardId);
+  const isCompleted = await boardService.removeBoard(req.user.id, req.params.boardId);
   //보드 삭제 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '보드가 삭제되었습니다.' });
@@ -183,10 +157,8 @@ router.delete('/:boardId', async (req, res) => {
 });
 /*  2.리스트 삭제 */
 router.delete('/lists/:listId', async (req, res) => {
-  const userId = req.user.id;
-  const boardId = req.body.board_id;
-  const listId = req.params.listId;
-  const isCompleted = await boardService.removeList(userId, boardId, listId);
+  if(req.body.board_id==undefined) return res.status(http.StatusCodes.BAD_REQUEST).json({ message: '카드 수정 실패' });
+  const isCompleted = await boardService.removeList(req.user.id, req.body.board_id, req.params.listId);
   //보드 삭제 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '리스트가 삭제되었습니다.' });
@@ -197,12 +169,8 @@ router.delete('/lists/:listId', async (req, res) => {
 });
 /*  3.카드 삭제 */
 router.delete('/lists/cards/:cardId', async (req, res) => {
-  const userId = req.user.id;
-  const boardId = req.body.board_id;
-  const listId = req.body.list_id;
-  const cardId = req.params.cardId;
-  console.log(boardId);
-  const isCompleted = await boardService.removeCard(userId, boardId, listId, cardId);
+  if(req.body.board_id==undefined || req.body.list_id==undefined) return res.status(http.StatusCodes.BAD_REQUEST).json({ message: '카드 삭제 실패' });
+  const isCompleted = await boardService.removeCard(req.user.id, req.body.board_id, req.body.list_id, req.params.cardId);
   //보드 삭제 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '카드가 삭제되었습니다.' });
