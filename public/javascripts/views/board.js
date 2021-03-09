@@ -588,13 +588,25 @@ export default class extends abstractview {
         container.append(btn, titleDiv);
         const cardContainer = document.createElement("ul");
         cardContainer.classList.add("card-container");
+        cardContainer.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = this.getDragAfterElement(cardContainer, e.clientY);
+            const card = document.querySelector('.dragging');
+            if (afterElement == null) {
+                const addCard = cardContainer.querySelector(".card.inactive");
+                cardContainer.insertBefore(card, addCard);
+            } else {
+                cardContainer.insertBefore(card, afterElement);
+                
+            }
+        });
         const addCard = document.createElement("li");
         addCard.classList.add("card", "inactive", "shadow");
         const addCardText = document.createElement("div");
         addCardText.classList.add("text-container", "pointer", "add-card", "shadow");
         addCardText.innerText = "+ 카드 등록";
+        addCardText.addEventListener("click", this.addCardEventAction);
         addCard.appendChild(addCardText);
-        addCard.addEventListener("click", this.addCardEventAction);
         cardContainer.appendChild(addCard);
         newList.append(id, container, cardContainer);
         const table = document.querySelector("ul.list-container");

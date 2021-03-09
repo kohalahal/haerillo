@@ -67,9 +67,13 @@ function login() {
         password
     };
     request("POST", "auth/login", data, false).then((res) => {
+        window.localStorage.setItem("token", res.token);
         goToIndex();
+        if(res && res.message) modal.simple(res.message);
+    }).catch(() => {
+        if(res && res.message) modal.simple(res.message);
+
     });
-    modal.simple(res.message);
 }
 
 function logout() {
