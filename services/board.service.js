@@ -3,6 +3,7 @@ const User = require("../models").users;
 const Board = require("../models").boards;
 const List = require("../models").lists;
 const Card = require("../models").cards;
+const { Op } = require("sequelize");
 
 const streamRouter = require("../routes/stream");
 
@@ -62,9 +63,12 @@ async function createList(userId, listInput) {
     /* 보드 소유자인지 확인 */
     if(await userHasBoard(userId, listInput.boardId)) {
         try {
-            await List.create(listInput);
+            const list = await List.create(listInput);
             /* 클라이언트 갱신 */
-            await sendEventsToClients(listInput.boardId);
+            listInput.model = "LIST";
+            listInput.type = "CREATE";
+            listInput.listId = list.id;
+            sendEventsToClients(listInput.boardId, listInput);
             return true;
         } catch {
         }
@@ -76,10 +80,12 @@ async function createCard(userId, cardInput) {
     /* 보드 소유자인지 확인 */
     if(await userHasBoard(userId, cardInput.boardId)) {
         try {
-            await Card.create(cardInput);
-            console.log('new card');
+            const card = await Card.create(cardInput);
             /* 클라이언트 갱신 */
-            await sendEventsToClients(cardInput.boardId);
+            cardInput.model = "CARD";
+            cardInput.type = "CREATE";
+            cardInput.cardId = card.id;
+            sendEventsToClients(cardInput.boardId, cardInput);
             return true;
         } catch {
         }
@@ -116,7 +122,9 @@ async function updateBoard(userId, boardInput) {
             }, {
                 where: { id: boardInput.id } 
             });
-            await sendEventsToClients(boardInput.id);
+            boardInput.model = "BOARD";
+            boardInput.type = "EDIT";
+            sendEventsToClients(boardInput.id, boardInput);
             return true;
         } catch {   
         }
@@ -133,7 +141,10 @@ async function updateList(userId,  boardId, listId, listInput) {
                 {
                 where: { id: listId } 
             });
-            await sendEventsToClients(boardId);
+            listInput.model = "LIST";
+            listInput.type = "EDIT";
+            listInput.listId = listId;
+            sendEventsToClients(boardId, listInput);
             return true;
         } catch {
         }
@@ -146,17 +157,70 @@ async function updateCard(userId, boardId, cardId, cardInput) {
     const board = await userHasBoard(userId, boardId);
     if(board) {
         try {
+            if(cardInput.index != undefined) await moveOtherCards(cardInput.listId, cardId, cardInput.index);
             await Card.update(
                 cardInput, 
                 {
                 where: { id: cardId } 
             });
-            await sendEventsToClients(boardId);
+            console.log("2");
+            cardInput.model = "CARD";
+            cardInput.type = "EDIT";
+            cardInput.cardId = cardId;
+            sendEventsToClients(boardId, cardInput);
             return true;
         } catch {                    
         }
     }
     return false;
+}
+/* 4. 카드 옮기기 */
+async function moveOtherCards(listId, cardId, index) {
+    const oldCard = await Card.findByPk(cardId);
+    console.log(oldCard.listId+" "+listId);
+    console.log(oldCard.index+" "+index);
+    if(oldCard.listId == listId) {
+        if(oldCard.index < index) {
+            await Card.increment(
+                { index: -1 },
+                { where: {
+                    listId: listId,
+                    index: {
+                        [Op.between]: [oldCard.index+1, index]
+                    }
+                }}
+            );            
+        } else {
+            await Card.increment(
+                { index: 1 },
+                { where: {
+                    listId: listId,
+                    index: {
+                        [Op.between]: [index, oldCard.index-1]
+                    }
+                }}
+            ); 
+        }
+    } else {
+        await Card.increment(
+            { index: -1 },
+            { where: {
+                listId: oldCard.listId,
+                index: {
+                    [Op.gt]: oldCard.index
+                }
+            }}
+        ); 
+        await Card.increment(
+            { index: 1 },
+            { where: {
+                listId: listId,
+                index: {
+                    [Op.gt]: index-1
+                }
+            }}
+        );  
+    }
 }
 
 /*  Delete */
@@ -168,6 +232,11 @@ async function removeBoard(userId, boardId) {
             await Board.destroy({
                 where: { id: boardId } 
             });
+            const data = {
+                model: "BOARD",
+                type: "DELETE"
+            };
+            sendEventsToClients(boardId, data);
             return true;
         } catch {
         }
@@ -186,7 +255,12 @@ async function removeList(userId, boardId, listId) {
                 await List.destroy({
                     where: { id: listId } 
                 });
-                await sendEventsToClients(boardId);
+                const data = {
+                    model: "LIST",
+                    type: "DELETE",
+                    listId : listId
+                };
+                sendEventsToClients(boardId, data);
                 return true;
             } catch {                
             }
@@ -207,7 +281,12 @@ async function removeCard(userId, boardId, listId, cardId) {
                     await Card.destroy({
                         where: { id: cardId } 
                     });
-                    await sendEventsToClients(boardId);
+                    const data = {
+                        model: "CARD",
+                        type: "DELETE",
+                        cardId: cardId
+                    };
+                    sendEventsToClients(boardId, data);
                     return true;
                 } catch {                   
                 }
@@ -258,9 +337,9 @@ async function getFullBoard(boardId) {
     return null;
 }
 /* 3.변경 사항을 온라인 클라이언트에게 전송 */
-async function sendEventsToClients(boardId) {
-    let board = await getFullBoard(boardId);
-    streamRouter.sendEvents(boardId, board);
+function sendEventsToClients(boardId, data) {
+    // let board = await getFullBoard(boardId);
+    streamRouter.sendEvents(boardId, data);
 }
 
 exports.createBoard = createBoard;
