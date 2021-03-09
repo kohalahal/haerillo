@@ -594,7 +594,7 @@ export default class extends abstractview {
         addCardText.classList.add("text-container", "pointer", "add-card", "shadow");
         addCardText.innerText = "+ 카드 등록";
         addCard.appendChild(addCardText);
-        addCard.addEventListener("click", this.makeCardInput);
+        addCard.addEventListener("click", this.addCardEventAction);
         cardContainer.appendChild(addCard);
         newList.append(id, container, cardContainer);
         const table = document.querySelector("ul.list-container");
