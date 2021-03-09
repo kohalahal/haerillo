@@ -33,9 +33,6 @@ export default class extends abstractview {
             xhr.responseType = 'json';
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    console.log(xhr.response);
-                    console.log(xhr.response.boards);
-                    console.log(xhr.response.message);
                     resolve(xhr.response);
                 } else {
                     window.localStorage.removeItem("token");
@@ -68,13 +65,19 @@ export default class extends abstractview {
                 </div>`;
     }
     boardTemplate(board) {
-        return `<a href="/board/${board.id}" data-link>
+        return `
                     <li class="board shadow border">
                         <div class="board-small">
+                            
                             <div class="board-small-title">
+                            <a href="/board/${board.id}" data-link>
                                 <h3>
                                     ${this.cutLongText(board.title)}
                                 </h3>
+                                </a>
+                            </div>
+                            <div class="board-delete pointer" onclick="deleteBoard(${board.id});">
+                                <i class="fas fa-trash-alt"></i>
                             </div>
                             <div class="board-small-date">
                                 created at ${this.dateFormat(board.createdAt)}
@@ -84,7 +87,7 @@ export default class extends abstractview {
                             </div>
                         </div>
                     </li>
-                </a>`;
+                `;
     }
     cutLongText(data) {
         if(data.length>20) {

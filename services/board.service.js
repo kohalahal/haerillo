@@ -92,7 +92,6 @@ async function createCard(userId, cardInput) {
 async function getBoardList(userId) {
     let user, boards;
     try {
-        
         user =  await User.findByPk(userId);
         boards = await user.getBoards();
     } catch {   
@@ -101,7 +100,6 @@ async function getBoardList(userId) {
 }
 /*  2.board 주기 */
 async function getBoard(userId, boardId) {
-    /* 유저가 소유한 보드인지 확인 */
     let board = await userHasBoard(userId, boardId);
     if(board) return board;
     return null;
@@ -247,23 +245,15 @@ async function getFullBoard(boardId) {
                     model: Card,
                     as: 'cards',
                     attributes : ['id', 'content', 'index'],
-                    required: false,
-                    // order: [ 
-                    //     [Card, 'index', 'asc']
-                    // ]           
-                }],
-                // order: [ 
-                //     [{ model: Card, as: 'cards' }, 'index', 'asc']
-                // ]
-
+                    required: false,                }],
             }],
             order: [ 
                 [{ model: List, as: 'lists' }, 'index', 'asc'],
                 [{ model: List, as: 'lists' }, { model: Card, as: 'cards' }, 'index', 'asc']
             ]
         });
-    } catch {
-        console.log("ㅎㅇ");
+    } catch (err) {
+        console.log(err);
     }
     return null;
 }

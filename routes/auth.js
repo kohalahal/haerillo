@@ -34,19 +34,15 @@ router.get('/email/:email', async (req, res) => {
 /* POST */
 /* 1.회원가입 */
 router.post('/join', async (req, res) => {
-  console.log(req.body);
-  /* 유저 입력 */
   const userInput = { 
     username: req.body.username, 
     email: req.body.email, 
     password: req.body.password
   };
-  /* 입력 체크 */
   if(!userInput.username || !userInput.email || !userInput.password) {
     res.status(http.StatusCodes.BAD_REQUEST).json({ message: '잘못된 입력입니다.' });
     return;
   }
-  /* 중복 체크 */
   if(!await authService.checkUsername(userInput.username)) {
     res.status(http.StatusCodes.BAD_REQUEST).json({ message: '중복된 유저네임입니다.' });
     return;
@@ -55,7 +51,6 @@ router.post('/join', async (req, res) => {
     res.status(http.StatusCodes.BAD_REQUEST).json({ message: '중복된 이메일입니다.' });
     return;
   }
-  /* 가입 */
   authService.register(userInput).then(() => {
     res.status(http.StatusCodes.CREATED).json({ message: '회원이 되신 것을 축하드립니다.' });
   }).catch(() => {
@@ -66,23 +61,18 @@ router.post('/join', async (req, res) => {
 /* 2.로그인 */
 router.post('/login', async (req, res, next) => {
   passport.authenticate('login', { session: false }, (user, message) => {
-    /* 로그인 성공시 user 리턴 */
     if (user) {      
       let token = jwtUtility.generateLoginToken(user.id, user.username);
       res.status(http.StatusCodes.OK).json({ token, message: message });
     } else {
-      /* 로그인 실패 - message에 로그인 실패 이유 */
       res.status(http.StatusCodes.UNAUTHORIZED).json(message);
     }
   })(req, res, next);
 });
 
-
 /* 3.토큰 유효성 확인 */
 router.get('/verify', passport.authenticate('jwt', {session: false}), (req, res) => {
   res.json({ username: req.user.username });
-  console.log("dd");
 });
 
- 
 module.exports = router;
