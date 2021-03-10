@@ -1,9 +1,10 @@
-<p align="center"># HAERILLO
+
+# HAERILLO
 
 ## 프로젝트 관리 웹 서비스
 
 🦜 #SPA 🦢 #PURE JAVASCRIPT 🦩 #SSE 🕊 #VANILLA JAVASCRIPT 🐇 #DRAG AND DROP 🦝 #AJAX 🍀 #SEQUELIZE 🌷 #PASSPORT 🌼 #JWT 🍃 #PROJECT MANAGEMENT 🍁 #ORM 💐 #CSS
-</p>
+
 
 ## DEMO
 🌞 [TRY DEMO HERE](https://haerillo.herokuapp.com/)
