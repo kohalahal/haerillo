@@ -20,7 +20,7 @@
 - JavaScript ES6  
 
 ## ARCHITECTURE
-하나의 프로젝트를 ** REST api ** 서버와 ** vanilla JavaScript SPA ** 프론트(public 폴더)로 분리하여 구성
+하나의 프로젝트를 **REST api** 서버와 **vanilla JavaScript SPA** 프론트(public 폴더)로 분리하여 구성
 
 ## REST api
 - 회원 api 
