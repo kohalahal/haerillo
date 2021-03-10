@@ -135,20 +135,7 @@ stream token은 유효기간이 10초로 설정되어있고, Array에 담아 서
 - Ajax를 통하여 api 서버와 통신  
 - Server Sent Event를 통하여 변경 사항을 실시간으로 갱신 
 
-## INSTALLATION
-- DB 설정   
-mysql 설치 후 DB 정보를 /config/config.json 파일에 입력  
-- HAERILLO 설치  
-```shell
-git clone https://github.com/kohalahal/haerillo
 
-cd haerillo
-
-npm install
-
-npm start
-```
-- http://localhost:3000 으로 접속 가능  
 
 
 
