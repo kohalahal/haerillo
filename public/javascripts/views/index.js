@@ -15,12 +15,10 @@ export default class extends abstractview {
                             </p>
                         </div>
                         <div class="index-message image">
-                            
                                 <h2>
                                     보드를 만들고 프로젝트를 관리하세요.
                                 </h2>
                                 <img src="https://cdn.pixabay.com/photo/2017/02/04/15/25/desk-2037545_960_720.png">
-                               
                         </div>
                     </div>     
                 </div>`;

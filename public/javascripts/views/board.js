@@ -415,9 +415,6 @@ export default class extends abstractview {
         const boardInput = { title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/"+boardId, boardInput).then((data) => {
             this.modal.simple(data.message);
-            // this.boardTitleValue = title;
-            // this.removeBoardEditor(event);
-        });
     }
     updateListRequest(event) {
         if(event) event.stopPropagation();

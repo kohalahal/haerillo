@@ -27,6 +27,7 @@ export default class extends abstractview {
         modal.querySelector(".message").innerText = "🍀 "+data.message;
         const button = modal.querySelector("button");
         button.innerText = "";
+
         data.links.forEach((link) => {
             const btn = document.createElement("a");
             btn.innerText = link.title;
