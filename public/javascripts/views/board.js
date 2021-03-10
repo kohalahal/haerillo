@@ -277,7 +277,9 @@ export default class extends abstractview {
         list.innerHTML = "";
         list.appendChild(title);
         list.addEventListener("click", this.editListEventAction);
-        list.closest(".text-container").querySelector(".delete-btn").classList.add("hover");
+        const btn = list.closest(".text-container").querySelector(".delete-btn");
+        btn.classList.add("hover");
+        btn.addEventListener("click", this.deleteList);
         this.activeListEdior = null;
         this.listTitleValue = "";
     }
@@ -488,14 +490,7 @@ export default class extends abstractview {
                 return;
             }
         });
-        if(index+1 < cardsInList.length) {
-            [...cardsInList].filter((e, i) => 
-                i > index
-            ).forEach((card, i) => {
-                this.moveCardRequest(null, card.firstElementChild.innerText, index + i );
-            });
-        }
-        const data = { board_id: boardId, list_id: listId };
+        const data = { board_id: boardId, list_id: listId, index: index };
         this.makeRequest("DELETE", "http://localhost:3000/boards/lists/cards/"+cardId, data).then((data) => {
             this.modal.simple(data.message);
         });
@@ -580,6 +575,7 @@ export default class extends abstractview {
         container.classList.add("text-container");        
         const btn = document.createElement("div");
         btn.classList.add("delete-btn", "hover", "list-delete");
+        btn.addEventListener("click", this.deleteList);
         const i = document.createElement("i");
         i.classList.add("fas", "fa-trash-alt");
         btn.appendChild(i);

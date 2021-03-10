@@ -170,7 +170,7 @@ router.delete('/lists/:listId', async (req, res) => {
 /*  3.카드 삭제 */
 router.delete('/lists/cards/:cardId', async (req, res) => {
   if(req.body.board_id==undefined || req.body.list_id==undefined) return res.status(http.StatusCodes.BAD_REQUEST).json({ message: '카드 삭제 실패' });
-  const isCompleted = await boardService.removeCard(req.user.id, req.body.board_id, req.body.list_id, req.params.cardId);
+  const isCompleted = await boardService.removeCard(req.user.id, req.body.board_id, req.body.list_id, req.params.cardId, req.body.index);
   //보드 삭제 완료
   if(isCompleted) {
     res.status(http.StatusCodes.OK).json({ message: '카드가 삭제되었습니다.' });

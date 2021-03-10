@@ -268,30 +268,36 @@ async function removeList(userId, boardId, listId) {
     }
 }
 /*  3.카드 삭제 */
-async function removeCard(userId, boardId, listId, cardId) {
+async function removeCard(userId, boardId, listId, cardId, index) {
     /* 유저가 소유한 보드인지 확인 */
-    const board = await userHasBoard(userId, boardId);
-    if(board) {
-        /* 리스트아이디가 정확한지 확인 */
-        const list = await List.findByPk(listId);
-        if(await board.hasList(list)) {
+    try {
+        const board = await userHasBoard(userId, boardId);
+        if(board) {
             const card = await Card.findByPk(cardId);
-            if(list.hasCard(card)) {
-                try {
-                    await Card.destroy({
-                        where: { id: cardId } 
-                    });
-                    const data = {
-                        model: "CARD",
-                        type: "DELETE",
-                        cardId: cardId
-                    };
-                    sendEventsToClients(boardId, data);
-                    return true;
-                } catch {                   
-                }
-            }
+            await Card.destroy({
+                where: { id: cardId } 
+            });
+            await Card.increment(
+                { index: -1 },
+                { where: {
+                    listId: listId,
+                    index: {
+                        [Op.gt]: index
+                    }
+                }}
+            ); 
+            const data = {
+                model: "CARD",
+                type: "DELETE",
+                cardId: cardId
+            };
+            sendEventsToClients(boardId, data);
+            return true;
         }
+
+        
+    } catch (err) {
+
     }
     return false;
 }
