@@ -64,8 +64,8 @@ export default class extends abstractview {
                     </ul>`;
         }
         return ` <ul>
-                    <li>
-                        ${data}님, 어서오세요!
+                    <li class="greeting">
+                    🌞 ${data}님, 어서오세요!
                     </li>
                     <li>
                         <a href="/board" data-link>보드</a>

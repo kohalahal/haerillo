@@ -59,7 +59,7 @@ export default class {
                         break;
                     case 'LIST':
                         console.log("리스트에딧");
-                        window.board.changeListTitlBySSEE(data.listId, data.title);
+                        window.board.changeListTitleBySSE(data.listId, data.title);
                         break;
                     case 'CARD':
                         if(data.index==undefined) {

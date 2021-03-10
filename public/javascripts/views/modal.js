@@ -14,7 +14,7 @@ export default class extends abstractview {
     simple(message) {
         const modal = document.querySelector(".modal");
         modal.classList.add("visible");
-        modal.querySelector(".message").innerText = message;
+        modal.querySelector(".message").innerText = "🌷 "+message;
         setTimeout(() => {
             modal.classList.remove("visible");
         }, 1500);
@@ -24,14 +24,17 @@ export default class extends abstractview {
         const modal = document.querySelector(".modal");
         modal.classList.add("visible");
         modal.classList.add("active");
-        modal.querySelector(".message").innerText = data.message;
+        modal.querySelector(".message").innerText = "🍀 "+data.message;
+        const button = modal.querySelector("button");
+        button.innerText = "";
+
         data.links.forEach((link) => {
             const btn = document.createElement("a");
             btn.innerText = link.title;
             btn.setAttribute("href", link.path);
             btn.setAttribute("data-link", "");
             btn.addEventListener("click", this.inactivateModal);
-            modal.appendChild(btn);
+            button.appendChild(btn);
         });
         const btn = document.createElement("a");
         btn.innerText = "닫기";

@@ -415,9 +415,6 @@ export default class extends abstractview {
         const boardInput = { title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/"+boardId, boardInput).then((data) => {
             this.modal.simple(data.message);
-        });
-        this.boardTitleValue = title;
-        this.removeBoardEditor(event);
     }
     updateListRequest(event) {
         if(event) event.stopPropagation();
@@ -429,8 +426,6 @@ export default class extends abstractview {
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/"+listId, listInput).then((data) => {
             this.modal.simple(data.message);
         });
-        this.listTitleValue = title;
-        this.removeListEditor(event);
     }
     updateCardRequest(event) {
         if(event) event.stopPropagation();
@@ -458,8 +453,8 @@ export default class extends abstractview {
         const list = { board_id: boardId, title: title, index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists", list).then((data) => {
             this.modal.simple(data.message);
+            input.value = "";
         });
-        input.value = "";
     }
     createCardRequest(event) {
         if(event) event.stopPropagation();
@@ -473,8 +468,8 @@ export default class extends abstractview {
         const cardInput = { board_id: boardId, list_id: listId, content: content , index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists/cards", cardInput).then((data) => {
             this.modal.simple(data.message);
+            input.value = "";
         });
-        input.value = "";
     }
     deleteListRequest(event) {
         if(event) event.stopPropagation();
@@ -553,12 +548,25 @@ export default class extends abstractview {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    changeBoardtitleBySSE(title) {
-        document.querySelector(".board-title").innerText = title;
+    changeBoardTitleBySSE(title) {
+        const container = document.querySelector(".board-title");
+        container.innerText = "";
+        container.addEventListener("click", this.editBoardEventAction);
+        const h3 = document.createElement("h3");
+        h3.innerText = title;
+        h3.classList.add("pointer");
+        container.appendChild(h3);
     }
 
     changeListTitleBySSE(listId, title) {
-        document.querySelector("li.list-"+listId).querySelector(".list-title").innerText = title;
+        const container = document.querySelector("li.list-"+listId).querySelector(".list-title");
+        container.innerText = "";
+        container.addEventListener("click", this.editListEventAction);
+        const h4 = document.createElement("h4");
+        h4.innerText = title;
+        h4.classList.add("pointer");
+        container.appendChild(h4);
+        this.activeListEdior = null;
     }
 
     changeCardContentBySSE(cardId, content) {
@@ -588,13 +596,25 @@ export default class extends abstractview {
         container.append(btn, titleDiv);
         const cardContainer = document.createElement("ul");
         cardContainer.classList.add("card-container");
+        cardContainer.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = this.getDragAfterElement(cardContainer, e.clientY);
+            const card = document.querySelector('.dragging');
+            if (afterElement == null) {
+                const addCard = cardContainer.querySelector(".card.inactive");
+                cardContainer.insertBefore(card, addCard);
+            } else {
+                cardContainer.insertBefore(card, afterElement);
+                
+            }
+        });
         const addCard = document.createElement("li");
         addCard.classList.add("card", "inactive", "shadow");
         const addCardText = document.createElement("div");
         addCardText.classList.add("text-container", "pointer", "add-card", "shadow");
         addCardText.innerText = "+ 카드 등록";
+        addCardText.addEventListener("click", this.addCardEventAction);
         addCard.appendChild(addCardText);
-        addCard.addEventListener("click", this.makeCardInput);
         cardContainer.appendChild(addCard);
         newList.append(id, container, cardContainer);
         const table = document.querySelector("ul.list-container");

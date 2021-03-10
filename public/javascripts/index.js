@@ -29,7 +29,7 @@ function join() {
         modal.simple("패스워드를 입력해주세요.");
         return;
     }
-    const passwordComfirm = document.querySelector("input[name=passwordCofrim]").value;
+    const passwordComfirm = document.querySelector("input[name=passwordConfirm]").value;
     if(!passwordComfirm) {
         modal.simple("확인용 패스워드를 입력해주세요.");
         return;
@@ -67,9 +67,13 @@ function login() {
         password
     };
     request("POST", "auth/login", data, false).then((res) => {
+        window.localStorage.setItem("token", res.token);
         goToIndex();
+        if(res && res.message) modal.simple(res.message);
+    }).catch(() => {
+        if(res && res.message) modal.simple(res.message);
+
     });
-    modal.simple(res.message);
 }
 
 function logout() {

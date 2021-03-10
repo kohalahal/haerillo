@@ -116,6 +116,7 @@ header{
   height: 50px;  
   background-color: #b7dc77;
   border-bottom: 1px solid black;
+  min-width: 336px;
 }
 .logo-ani {
   color: #ffeb72;;
@@ -174,6 +175,11 @@ nav ul li {
 nav a:hover {  
   color: #0f737d;
 }
+@media (max-width: 537px) {
+  header{
+    height: 88px;
+  }
+}
 
 /*  `FOOTER`
 ------------------------------------------------------------------*/
@@ -200,7 +206,7 @@ nav a:hover {
   transform: translate(-50%, -50%);
 }
 .modal {
-  background-color: #f3ed80;
+  background-color: #fd9f72;
   width: 500px;
   height: 300px;
   position: fixed;
@@ -275,20 +281,28 @@ nav a:hover {
 }
 .text .logo {
   color: #ff938f;
-  font-size: 7rem;
-  -webkit-text-stroke-width: .5px;
+  -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: black;
 }
 .index-message.image {
   text-align: center;
   border-radius: 10px;
+  display: block;
 }
 .index-message.image img {
-  max-width: 40vw;
+  width: 50vw;
   object-fit: contain;
+  margin: auto;
 }
 .image h2 {
   padding: 10%;
+}
+@media (max-width: 1256px) {
+  .index-message {
+    display: contents;
+    font-size: 15vw;
+
+  }
 }
 /* 로그인 l조인 페이지 */
 .login {
