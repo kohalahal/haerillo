@@ -87,19 +87,53 @@ http 스트림 response를 통해 보드 변경 사항 실시간 전달
       return;
     }
 ~~~
-stream token은 유효기간이 10초로 설정되어있고, Array에 담아 서버에 보관한다.
+stream token은 유효기간이 10초로 설정되어있고, Array에 담아 서버 메모리에 보관한다.
 클라이언트가 stream token으로 인증을 거치고 나면 서버 Array에서 삭제한다. 이를 통해서 하나의 토큰은 한 번의 인증만 가능하도록 하였다.
 
 ## SSE
-- 서버는 변경 사항 발생 시 보드 전체의 정보를 전달하지 않고, 변경된 요소의 정보만을 부분적으로 전달한다.
+- /stream에 get 요청을 보내어 인증을 거친 클라이언트의 토큰과 response는 Array에 담겨 서버 메모리에 저장된다.
+~~~
+    //스트림 라우터(/routes/stream.js)
+    const onlineClients = {};
+    ...
+    //접속 성공시 클라이언트 저장
+    function addToOnlineClients(boardId, token, res) {
+        if(!onlineClients[boardId]) {
+            onlineClients[boardId] = [];
+        }
+        onlineClients[boardId].push({
+            token: token,
+            res
+        });
+    }
+~~~
+- 서버는 보드에 대한 변경 사항 발생 시 이를 서버 DB에 반영하고, 같은 보드에 접속중인 클라이언트들에게 SSE로 전송한다.
+~~~
+    //스트림 라우터(/routes/stream.js) 메소드. 보드 서비스(/services/board.service.js)에서 사용
+    function sendEvents(boardId, data) {
+        if(!onlineClients[boardId]) {
+            onlineClients[boardId] = [];
+        }
+        onlineClients[boardId].forEach((client) => {
+            client.res.write(`data: ${JSON.stringify(data)} \n\n`);
+        });
+    }
+~~~
+- 이때 보드 전체의 정보를 전달하는 것이 아니라, 변경된 요소의 정보만을 부분적으로 전달한다.
 - 이를 전송받은 클라이언트는 페이지 전체를 새로고침하지 않고 변경된 요소만을 갱신한다.
 - 이러한 부분적 갱신은 전체 페이지 갱신보다 주고 받는 데이터가 적어 효율적이고, 유저가 작업중인 부분도 보존할 수 있다.  
+- 클라이언트가 접속을 종료하면 토큰 정보를 통해 클라이언트 정보를 Array에서 삭제한다.
+~~~
+    req.on("close", () => {
+        /* 온라인 클라이언트에서 삭제 */
+        removeOnlineClient(boardId, token);
+    });
+~~~
 
 ## FRONT
 - vanilla JavaScript만을 이용한 Single Page Application  
 - Ajax를 통하여 api 서버와 통신  
-- Server Sent Event를 통하여 변경 사항을 실시간으로 갱신  
-
+- Server Sent Event를 통하여 변경 사항을 실시간으로 갱신 
 
 ## INSTALLATION
 - DB 설정   
