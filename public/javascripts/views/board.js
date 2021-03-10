@@ -64,7 +64,6 @@ export default class extends abstractview {
                 return;
             }
         } catch(err) {
-            console.log(err);
         }
         this.modal.forbidden();
         return;
@@ -182,6 +181,7 @@ export default class extends abstractview {
         this.boardTitleValue = text;
     }
     makeListEditor(event) {
+        console.log(event.target);
         if(event) event.stopPropagation();
         if(this.activeListEdior) {
             this.cancelEditListEventAction();
@@ -221,8 +221,6 @@ export default class extends abstractview {
         this.listTitleValue = text;
     }
     makeCardEditor(event) {
-        console.log("메이크카드에디터");
-        console.log(event.target);
         if(event) event.stopPropagation();
         if(this.activeCardEdior) {
             this.cancelEditCardEventAction();
@@ -271,7 +269,6 @@ export default class extends abstractview {
         board.addEventListener("click", this.editBoardEventAction);
     }
     removeListEditor(event) {
-        console.log(this.activeListEdior);
         if(event) event.stopPropagation();
         const list = this.activeListEdior.closest(".list-title");
         list.classList.add("shadow");
@@ -286,8 +283,6 @@ export default class extends abstractview {
         this.listTitleValue = "";
     }
     removeCardEditor(event) {      
-        console.log("리무브카드에디터");  
-        console.log(event);
         if(event) event.stopPropagation();
         const card = this.activeCardEdior.closest(".card-content");
         card.classList.add("pointer");
@@ -399,13 +394,11 @@ export default class extends abstractview {
         this.moveCardRequest(listId, card.firstElementChild.innerText, index);
     }
     moveCardRequest(listId, cardId, index) {
-        console.log(`${listId}의 ${cardId}느 ${index}로옮긴다`);
         const boardId = this.params.id;
         const cardInput = { board_id: boardId };
         if(listId) cardInput.list_id = listId;
         cardInput.index = index;
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/cards/"+cardId, cardInput).then((data) => {
-            console.log("ㅇㅋ");
         });
     }
     updateBoardRequest(event) {
@@ -415,6 +408,7 @@ export default class extends abstractview {
         const boardInput = { title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/"+boardId, boardInput).then((data) => {
             this.modal.simple(data.message);
+        });
     }
     updateListRequest(event) {
         if(event) event.stopPropagation();
@@ -458,7 +452,6 @@ export default class extends abstractview {
     }
     createCardRequest(event) {
         if(event) event.stopPropagation();
-        console.log(event);
         const boardId = this.params.id;
         const input = document.querySelector("textarea.card-input.create");
         const list = input.closest('.list');
@@ -559,7 +552,10 @@ export default class extends abstractview {
     }
 
     changeListTitleBySSE(listId, title) {
-        const container = document.querySelector("li.list-"+listId).querySelector(".list-title");
+        const list = document.querySelector("li.list-"+listId);
+        const deleteBtn = list.querySelector(".delete-btn");
+        deleteBtn.classList.add("hover");
+        const container = list.querySelector(".list-title");
         container.innerText = "";
         container.addEventListener("click", this.editListEventAction);
         const h4 = document.createElement("h4");
@@ -582,7 +578,7 @@ export default class extends abstractview {
         id.setAttribute("style", "display: none;");
         id.innerText = listId;
         const container = document.createElement("div");
-        container.classList.add("text-containter");        
+        container.classList.add("text-container");        
         const btn = document.createElement("div");
         btn.classList.add("delete-btn", "hover", "list-delete");
         const i = document.createElement("i");
@@ -590,6 +586,7 @@ export default class extends abstractview {
         btn.appendChild(i);
         const titleDiv = document.createElement("div");
         titleDiv.classList.add("list-title", "pointer");
+        titleDiv.addEventListener("click", this.editListEventAction);
         const h4 = document.createElement("h4");
         h4.innerText = title;
         titleDiv.appendChild(h4);
@@ -623,7 +620,6 @@ export default class extends abstractview {
     }
 
     addCardBySSE(listId, cardId, content, index) {
-        console.log("addcard");
         const newCard = document.createElement("li");
         newCard.classList.add("card", "card-"+cardId, "active", "shadow", "border");
         newCard.setAttribute("draggable", "true");

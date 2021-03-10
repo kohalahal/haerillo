@@ -70,7 +70,7 @@ function login() {
         window.localStorage.setItem("token", res.token);
         goToIndex();
         if(res && res.message) modal.simple(res.message);
-    }).catch(() => {
+    }).catch((res) => {
         if(res && res.message) modal.simple(res.message);
 
     });

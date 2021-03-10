@@ -12,15 +12,14 @@ const streamRouter = require('./routes/stream');
 
 const app = express();
 
-/* sequelize.sequelize.sync({
-        force: true, 
+sequelize.sequelize.sync({
+        // force: true, 
         logging: false
     }).then(() => {
       console.log('db 초기화 완료');
     }).catch((err) => {
         console.error('db 초기화 실패'+err);
-    }).finally(() => 
-    sequelize.sequelize.close()); */
+    });
 
 app.use(logger('dev'));
 app.use(express.json());

@@ -25,7 +25,7 @@ export default class extends abstractview {
         modal.classList.add("visible");
         modal.classList.add("active");
         modal.querySelector(".message").innerText = "🍀 "+data.message;
-        const button = modal.querySelector("button");
+        const button = modal.querySelector(".button");
         button.innerText = "";
 
         data.links.forEach((link) => {
@@ -39,7 +39,8 @@ export default class extends abstractview {
         const btn = document.createElement("a");
         btn.innerText = "닫기";
         btn.addEventListener("click", this.inactivateModal);
-        modal.appendChild(btn);
+        button.appendChild(btn);
+        modal.appendChild(button);
     }
 
     login() {

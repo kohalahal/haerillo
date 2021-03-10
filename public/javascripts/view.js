@@ -25,7 +25,6 @@ const navigateTo = url => {
 };
 
 const router = async () => {
-
     document.querySelector("body").classList.remove("color");
     const header = new Header();
     header.init();
