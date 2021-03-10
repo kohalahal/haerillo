@@ -1,8 +1,10 @@
 # HAERILLO
 
-## 프로젝트를 목록으로 관리하자
+## 프로젝트 관리 웹 서비스
 
 ### 🌞 [TRY DEMO HERE](https://haerillo.herokuapp.com/)
+🦜 #SPA 🦢 #PURE JAVASCRIPT 🦩 #SSE 🕊 #VANILLA JAVASCRIPT 🐇 #DRAG AND DROP 🦝 #AJAX
+🍀 #SEQUELIZE 🌷 #PASSPORT 🌼 #JWT 🍃 #PROJECT MANAGEMENT 🍁 #ORM 💐 #CSS
 
 ## FEATURE
 - 드래그 앤 드롭 기능
@@ -39,8 +41,8 @@ boards/lists/cards
 
 ## FRONT
 - vanilla JavaScript만을 이용한 Single Page Application  
-- Ajax를 통해 api 서버와 통신  
-- Server Sent Event를 통해 변경 사항 전달받아 실시간 갱신  
+- Ajax를 통하여 api 서버와 통신  
+- Server Sent Event를 통하여 변경 사항 전달받아 실시간 갱신  
 
 ## SSE
 - 서버에서 Board, List, Card 각각의 변경 사항을 부분적으로 전달하고, 이를 전송받은 클라이언트는 페이지 전체가 아닌 부분만을 갱신한다.  
@@ -52,8 +54,8 @@ boards/lists/cards
 - 리스트:카드 1:N 관계
 
 ## INSTALLATION
-- 설치 전에..  
-mysql 설치, config/config.json 파일에 db 정보 입력  
+- DB 설정 
+mysql 설치 후 DB 정보를 config/config.json 파일에 입력  
 - HAERILLO 설치  
 ```shell
 git clone https://github.com/kohalahal/haerillo
@@ -64,7 +66,7 @@ npm install
 
 npm start
 ```
-- http://localahost:3000 으로 접속 가능  
+- http://localhost:3000 으로 접속 가능  
 
 
 
