@@ -699,7 +699,7 @@ export default class extends abstractview {
     }
     
     List ({id, title, cards}) {
-        return `<li class="list list-${id} shadow border" draggable="true">
+        return `<li class="list list-${id} shadow border">
                     <div class="list-id" style="display: none;">${id}</div>
                     <div class="text-container">
                         <div class="delete-btn hover list-delete">
