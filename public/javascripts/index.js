@@ -29,7 +29,7 @@ function join() {
         modal.simple("패스워드를 입력해주세요.");
         return;
     }
-    const passwordComfirm = document.querySelector("input[name=passwordCofrim]").value;
+    const passwordComfirm = document.querySelector("input[name=passwordConfirm]").value;
     if(!passwordComfirm) {
         modal.simple("확인용 패스워드를 입력해주세요.");
         return;

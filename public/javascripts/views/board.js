@@ -415,9 +415,9 @@ export default class extends abstractview {
         const boardInput = { title: title };
         this.makeRequest("PUT", "http://localhost:3000/boards/"+boardId, boardInput).then((data) => {
             this.modal.simple(data.message);
+            // this.boardTitleValue = title;
+            // this.removeBoardEditor(event);
         });
-        this.boardTitleValue = title;
-        this.removeBoardEditor(event);
     }
     updateListRequest(event) {
         if(event) event.stopPropagation();
@@ -429,8 +429,6 @@ export default class extends abstractview {
         this.makeRequest("PUT", "http://localhost:3000/boards/lists/"+listId, listInput).then((data) => {
             this.modal.simple(data.message);
         });
-        this.listTitleValue = title;
-        this.removeListEditor(event);
     }
     updateCardRequest(event) {
         if(event) event.stopPropagation();
@@ -458,8 +456,8 @@ export default class extends abstractview {
         const list = { board_id: boardId, title: title, index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists", list).then((data) => {
             this.modal.simple(data.message);
+            input.value = "";
         });
-        input.value = "";
     }
     createCardRequest(event) {
         if(event) event.stopPropagation();
@@ -473,8 +471,8 @@ export default class extends abstractview {
         const cardInput = { board_id: boardId, list_id: listId, content: content , index: index };
         this.makeRequest("POST", "http://localhost:3000/boards/lists/cards", cardInput).then((data) => {
             this.modal.simple(data.message);
+            input.value = "";
         });
-        input.value = "";
     }
     deleteListRequest(event) {
         if(event) event.stopPropagation();
@@ -553,12 +551,25 @@ export default class extends abstractview {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    changeBoardtitleBySSE(title) {
-        document.querySelector(".board-title").innerText = title;
+    changeBoardTitleBySSE(title) {
+        const container = document.querySelector(".board-title");
+        container.innerText = "";
+        container.addEventListener("click", this.editBoardEventAction);
+        const h3 = document.createElement("h3");
+        h3.innerText = title;
+        h3.classList.add("pointer");
+        container.appendChild(h3);
     }
 
     changeListTitleBySSE(listId, title) {
-        document.querySelector("li.list-"+listId).querySelector(".list-title").innerText = title;
+        const container = document.querySelector("li.list-"+listId).querySelector(".list-title");
+        container.innerText = "";
+        container.addEventListener("click", this.editListEventAction);
+        const h4 = document.createElement("h4");
+        h4.innerText = title;
+        h4.classList.add("pointer");
+        container.appendChild(h4);
+        this.activeListEdior = null;
     }
 
     changeCardContentBySSE(cardId, content) {
