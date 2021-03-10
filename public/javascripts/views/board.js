@@ -181,7 +181,6 @@ export default class extends abstractview {
         this.boardTitleValue = text;
     }
     makeListEditor(event) {
-        console.log(event.target);
         if(event) event.stopPropagation();
         if(this.activeListEdior) {
             this.cancelEditListEventAction();
@@ -638,6 +637,7 @@ export default class extends abstractview {
         const contentDiv = document.createElement("div");
         contentDiv.classList.add("card-content", "pointer");
         contentDiv.innerText = content;
+        contentDiv.addEventListener("click", this.editCardEventAction);
         container.appendChild(contentDiv);
         newCard.append(id, btn, container);
         newCard.addEventListener('dragstart', () => {
