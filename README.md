@@ -2,9 +2,10 @@
 
 ## 프로젝트 관리 웹 서비스
 
-### 🌞 [TRY DEMO HERE](https://haerillo.herokuapp.com/)
-🦜 #SPA 🦢 #PURE JAVASCRIPT 🦩 #SSE 🕊 #VANILLA JAVASCRIPT 🐇 #DRAG AND DROP 🦝 #AJAX
-🍀 #SEQUELIZE 🌷 #PASSPORT 🌼 #JWT 🍃 #PROJECT MANAGEMENT 🍁 #ORM 💐 #CSS
+🦜 #SPA 🦢 #PURE JAVASCRIPT 🦩 #SSE 🕊 #VANILLA JAVASCRIPT 🐇 #DRAG AND DROP 🦝 #AJAX 🍀 #SEQUELIZE 🌷 #PASSPORT 🌼 #JWT 🍃 #PROJECT MANAGEMENT 🍁 #ORM 💐 #CSS
+
+## DEMO
+🌞 [TRY DEMO HERE](https://haerillo.herokuapp.com/)
 
 ## FEATURE
 - 드래그 앤 드롭 기능
