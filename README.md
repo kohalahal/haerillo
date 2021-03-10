@@ -26,19 +26,20 @@
 하나의 프로젝트를 **REST api** 서버와 **vanilla JavaScript SPA** 프론트(public 폴더)로 분리하여 구성
 
 ## REST api
-- 회원 api 
-auth/join : 회원가입
-auth/login : 로그인, jwt 발행
-auth/verify : jwt 인증
+- 회원 api   
+auth/join : 회원가입  
+auth/login : 로그인, jwt 발행  
+auth/verify : jwt 인증  
 
-- 보드 api
-boards
-boards/lists
-boards/lists/cards
-각 uri마다 GET, POST, PUT, DELETE 메소드 제공
+- 보드 api  
+boards  
+boards/lists  
+boards/lists/cards  
+각 uri마다 GET, POST, PUT, DELETE 메소드 제공  
 
-- 스트림 api
-스트림 토큰으로 권한 인증, 스트림 response를 통해 보드 변경 사항 실시간 제공
+- 스트림 api  
+스트림 토큰으로 권한 인증  
+스트림 response를 통해 보드 변경 사항 실시간 제공  
 
 ## FRONT
 - vanilla JavaScript만을 이용한 Single Page Application  
@@ -50,12 +51,13 @@ boards/lists/cards
 - 전체를 갱신하는 것보다 주고 받는 데이터가 적어 효율적이고, 유저의 작업에도 지장을 적게 준다.  
 
 ## MODEL
-- 유저:보드 M:M 관계(협업 기능 추가를 위해서)
-- 보드:리스트 1:N 관계
-- 리스트:카드 1:N 관계
+* 유저, 보드, 리스트, 카드 4개의 엔티티
+- 유저 : 보드 => M:M 관계(협업 기능 추가를 위해서)
+- 보드 : 리스트 => 1:N 관계
+- 리스트 : 카드 => 1:N 관계
 
 ## INSTALLATION
-- DB 설정 
+- DB 설정   
 mysql 설치 후 DB 정보를 config/config.json 파일에 입력  
 - HAERILLO 설치  
 ```shell
