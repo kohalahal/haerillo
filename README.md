@@ -78,14 +78,14 @@ http 스트림 response를 통해 보드 변경 사항 실시간 전달
 ~~~
     //클라이언트(/view/board.js)
     const data = await this.getData(this.params.id);
-          if(data) {
-              this.render(data.board);
-              if(!this.sse) this.sse = new SSE(data.streamToken, this, this.modal);
-              return;
-          } else {
-              this.modal.forbidden();
-              return;
-          }
+    if(data) {
+      this.render(data.board);
+      if(!this.sse) this.sse = new SSE(data.streamToken, this, this.modal);
+      return;
+    } else {
+      this.modal.forbidden();
+      return;
+    }
 ~~~
 stream token은 유효기간이 10초로 설정되어있고, Array에 담아 서버에 보관한다.
 클라이언트가 stream token으로 인증을 거치고 나면 서버 Array에서 삭제한다. 이를 통해서 하나의 토큰은 한 번의 인증만 가능하도록 하였다.
