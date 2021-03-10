@@ -3,7 +3,9 @@
 
 ## 프로젝트 관리 웹 서비스
 
+<p align="center">
 🦜 #SPA 🦢 #PURE JAVASCRIPT 🦩 #SSE 🕊 #VANILLA JAVASCRIPT 🐇 #DRAG AND DROP 🦝 #AJAX 🍀 #SEQUELIZE 🌷 #PASSPORT 🌼 #JWT 🍃 #PROJECT MANAGEMENT 🍁 #ORM 💐 #CSS
+</p>
 
 
 ## DEMO
@@ -42,7 +44,7 @@ app.get('/*', function(req, res, next) {
 
 ## MODEL
 * 유저, 보드, 리스트, 카드 4개의 엔티티
-- 유저 : 보드 => M:M 관계(협업 기능 추가를 위해서)
+- 유저 : 보드 => M:N 관계(협업 기능 추가를 위해서)
 - 보드 : 리스트 => 1:N 관계
 - 리스트 : 카드 => 1:N 관계
 
