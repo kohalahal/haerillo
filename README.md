@@ -1,3 +1,3 @@
 # haerillo
 
-![스크린샷](/haeerillo.gif?raw=true)
+![스크린샷](/haerillo.gif?raw=true)
